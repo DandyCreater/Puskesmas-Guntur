@@ -6,6 +6,7 @@ class ColorManager {
   static Color secondaryColor = const Color(0xff38B48D);
   static Color backgroundColor = const Color(0xffFFFFFF);
   static Color blackprimaryColor = const Color(0xff000000);
+  static Color appBarColor = const Color(0xffFAFDFC);
 
   //Text Color
   static Color blackTextColor = const Color(0xff000000);
