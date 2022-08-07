@@ -142,23 +142,27 @@ class _SignInPageState extends State<SignInPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Halo",
-                          style: ThemeText.heading1
-                              .copyWith(color: ColorManager.secondaryColor),
+                        Expanded(
+                          child: Text(
+                            "Halo",
+                            style: ThemeText.heading1
+                                .copyWith(color: ColorManager.secondaryColor),
+                          ),
                         ),
-                        Row(
-                          children: [
-                            Text(
-                              "Selamat Datang",
-                              style: ThemeText.heading2
-                                  .copyWith(color: ColorManager.secondaryColor),
-                            ),
-                            Image.asset(
-                              "assets/icons/hand_icon.png",
-                              scale: 1.5,
-                            ),
-                          ],
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                "Selamat Datang",
+                                style: ThemeText.heading2.copyWith(
+                                    color: ColorManager.secondaryColor),
+                              ),
+                              Image.asset(
+                                "assets/icons/hand_icon.png",
+                                scale: 1.5,
+                              ),
+                            ],
+                          ),
                         )
                       ],
                     ),
