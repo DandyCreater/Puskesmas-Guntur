@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:puskesmas_guntur/presentation/pages/article/article-page.dart';
+import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-in/signin-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-up/signup-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/splashpage/splashpage.dart';

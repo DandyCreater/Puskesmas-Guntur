@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
+import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
 
 class ArticleCard extends StatelessWidget {
   String imageUrl;
@@ -22,7 +24,19 @@ class ArticleCard extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailArticlePage(
+                    title: title,
+                    imageUrl: imageUrl,
+                    puskesmas: 'Puskesmas Guntur',
+                    date: date,
+                    time: '08.58 PM',
+                    textContent:
+                        'Monitoring dan evaluasi yang dilakukan oleh Bagian Organisasi Sekretariat Daerah melakukan monitoring dan evaluasi penyelenggaraan pelayanan public di bidang Kesehatan, merupakan salah satu bentuk pengawasan dan pengendalian eksternal  mencakup aspek administratif, sumber daya, pencapaian kinerja program dan teknis pelayanan. Tujuan dari kegiatan monitoring dan evaluasi ini antara lain adalah untuk mengetahui sejauh mana pelaksanaan pelayanan kesehatan, apakah sesuai dengan standar rencana kerja, apakah sumber daya telah ada dan digunakan sesuai dengan yang telah ditetapkan, mengetahui adanya kendala, hambatan dalam melaksanakan pelayanan kesehatan, sehingga dapat ditetapkan pemecahan masalah sedini mungkin, mengetahui ada penyimpangan pelaksanaan pelayanan kesehatan sehingga segera dilakukan klarifikasi, memberikan informasi kepada pengambil keputusan tentang adanya penyimpangan dan penyebabnya, sehingga dapat diambil keputusan untuk melakukan koreksi pada pelaksanaan kegiatan, memberikan informasi/laporan kepada pengambil keputusan tentang adanya perubahan-perubahan lingkungan yang harus ditindaklanjuti dengan penyesuaian kegiatan dan memberikan informasi  akuntabilitas pelaksanaan dan hasil kinerja program/kegiatan kepada pihak yang berkepentingan, secara kontinyu dari waktu ke waktu.Monev Juga dilakukan terhadap pemenuhan variabel dan atribut pelayanan publik yang dinilai oleh Ombudsman setiap tahunnya serta evaluasi atas pelaksanaan Survei Kepuasan Masyarakat.Semoga dengan Pelaksanaan Monev CPP ini kami bisa semakin meningkatkan kualitas pelayanan kami kepada masyarakat.')));
+      },
       child: Container(
         width: double.infinity,
         height: height * 0.22,
