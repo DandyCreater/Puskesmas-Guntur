@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
-import 'package:puskesmas_guntur/presentation/widges/at_signIn-Page/customSosMedSignIn.dart';
+import 'package:puskesmas_guntur/presentation/widget/at_signIn-Page/customSosMedSignIn.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -29,6 +31,43 @@ class _SignInPageState extends State<SignInPage> {
   _checked() {
     _isChecked = !_isChecked;
     setState(() {});
+  }
+
+  _showAlertDialog(BuildContext context, String message) {
+    Widget acceptButton = TextButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: Text("OK", style: ThemeText.heading3),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Center(
+        child: Text("Login Gagal", style: ThemeText.heading2),
+      ),
+      content: Text(message, style: ThemeText.heading3),
+      actions: [
+        acceptButton,
+      ],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
+  }
+
+  _loginCondition() {
+    if (emailController.text.isEmpty && passwordController.text.isEmpty) {
+      _showAlertDialog(context, "Email / Password Tidak Boleh Kosong");
+      emailController.text = "";
+      passwordController.text = "";
+    } else {
+      BlocProvider.of<SignInBloc>(context).add(FetchSignIn(
+          email: emailController.text.toString(),
+          password: passwordController.text.toString()));
+    }
   }
 
   @override
@@ -124,224 +163,242 @@ class _SignInPageState extends State<SignInPage> {
         );
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: height * 0.1,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    height: height * 0.085,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      body: BlocListener<SignInBloc, SignInState>(
+        listener: (context, state) {
+          if (state is SignInLoading) {
+            Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is SignInSuccess) {
+            Future.delayed(const Duration(seconds: 2)).then((value) =>
+                Navigator.pushNamedAndRemoveUntil(
+                    context, Routes.articleRoute, (route) => false));
+          } else if (state is SignInFailed) {
+            _showAlertDialog(context, "Email / Password Salah");
+            emailController.text = "";
+            passwordController.text = "";
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: height * 0.1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      height: height * 0.085,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Halo",
+                              style: ThemeText.heading1
+                                  .copyWith(color: ColorManager.secondaryColor),
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Selamat Datang",
+                                  style: ThemeText.heading2.copyWith(
+                                      color: ColorManager.secondaryColor),
+                                ),
+                                Image.asset(
+                                  "assets/icons/hand_icon.png",
+                                  scale: 1.5,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: height * 0.085,
+                      width: 4,
+                      decoration: BoxDecoration(
+                          color: ColorManager.secondaryColor,
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    SizedBox(
+                      height: height * 0.085,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/logo_3.png",
+                              scale: 2.1,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "UPT\nPuskemas Guntur\nGarut Jawa Barat",
+                              style: ThemeText.heading3
+                                  .copyWith(color: ColorManager.primaryColor),
+                            ),
+                          ]),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.06,
+                ),
+                email(),
+                SizedBox(
+                  height: height * 0.015,
+                ),
+                password(),
+                SizedBox(
+                  height: height * 0.015,
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       children: [
-                        Expanded(
-                          child: Text(
-                            "Halo",
-                            style: ThemeText.heading1
-                                .copyWith(color: ColorManager.secondaryColor),
+                        GestureDetector(
+                          onTap: _checked,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: ColorManager.backgroundColor,
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(
+                                  color: ColorManager.blackprimaryColor),
+                            ),
+                            child: _isChecked
+                                ? Icon(
+                                    Icons.check,
+                                    color: ColorManager.secondaryColor,
+                                  )
+                                : Container(),
                           ),
                         ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Selamat Datang",
-                                style: ThemeText.heading2.copyWith(
-                                    color: ColorManager.secondaryColor),
-                              ),
-                              Image.asset(
-                                "assets/icons/hand_icon.png",
-                                scale: 1.5,
-                              ),
-                            ],
-                          ),
-                        )
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          "Remember Me",
+                          style: ThemeText.heading2,
+                        ),
                       ],
                     ),
-                  ),
-                  Container(
-                    height: height * 0.085,
-                    width: 4,
-                    decoration: BoxDecoration(
-                        color: ColorManager.secondaryColor,
-                        borderRadius: BorderRadius.circular(20)),
-                  ),
-                  SizedBox(
-                    height: height * 0.085,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/images/logo_3.png",
-                            scale: 2.1,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "UPT\nPuskemas Guntur\nGarut Jawa Barat",
-                            style: ThemeText.heading3
-                                .copyWith(color: ColorManager.primaryColor),
-                          ),
-                        ]),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: height * 0.06,
-              ),
-              email(),
-              SizedBox(
-                height: height * 0.015,
-              ),
-              password(),
-              SizedBox(
-                height: height * 0.015,
-              ),
-              SizedBox(
-                height: height * 0.02,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _checked,
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            color: ColorManager.backgroundColor,
-                            borderRadius: BorderRadius.circular(3),
-                            border: Border.all(
-                                color: ColorManager.blackprimaryColor),
-                          ),
-                          child: _isChecked
-                              ? Icon(
-                                  Icons.check,
-                                  color: ColorManager.secondaryColor,
-                                )
-                              : Container(),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        "Forgot Password?",
+                        style: ThemeText.heading3
+                            .copyWith(color: ColorManager.redTextColor),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.05,
+                ),
+                SizedBox(
+                    height: height * 0.06,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              ColorManager.primaryColor),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)))),
+                      onPressed: _loginCondition,
+                      child: Text(
+                        "LOGIN",
+                        style: ThemeText.heading2.copyWith(
+                          color: ColorManager.whiteTextColor,
                         ),
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        "Remember Me",
-                        style: ThemeText.heading2,
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Forgot Password?",
-                      style: ThemeText.heading3
-                          .copyWith(color: ColorManager.redTextColor),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: height * 0.05,
-              ),
-              SizedBox(
-                  height: height * 0.06,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            ColorManager.primaryColor),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)))),
-                    onPressed: () {},
-                    child: Text(
-                      "LOGIN",
-                      style: ThemeText.heading2.copyWith(
-                        color: ColorManager.whiteTextColor,
+                    )),
+                SizedBox(
+                  height: height * 0.03,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: width * 0.25,
+                      height: 2,
+                      decoration: BoxDecoration(
+                        color: ColorManager.blackprimaryColor,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                  )),
-              SizedBox(
-                height: height * 0.03,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: width * 0.25,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: ColorManager.blackprimaryColor,
-                      borderRadius: BorderRadius.circular(2),
+                    Text(
+                      "Or Login With",
+                      style: ThemeText.heading2,
                     ),
-                  ),
-                  Text(
-                    "Or Login With",
-                    style: ThemeText.heading2,
-                  ),
-                  Container(
-                    width: width * 0.25,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: ColorManager.blackprimaryColor,
-                      borderRadius: BorderRadius.circular(2),
+                    Container(
+                      width: width * 0.25,
+                      height: 2,
+                      decoration: BoxDecoration(
+                        color: ColorManager.blackprimaryColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    CustomSosMedSignIn(
+                      imageUrl: "assets/icons/facebook_icon.png",
+                      title: "Facebook",
+                      press: () {},
                     ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: height * 0.02,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  CustomSosMedSignIn(
-                    imageUrl: "assets/icons/facebook_icon.png",
-                    title: "Facebook",
-                    press: () {},
-                  ),
-                  CustomSosMedSignIn(
-                    imageUrl: "assets/icons/google_icon.png",
-                    title: "Google",
-                    press: () {},
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: height * 0.1,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't Have An Account? ",
-                    style: ThemeText.heading3,
-                  ),
-                  GestureDetector(
-                    onTap: () =>
-                        Navigator.pushNamed(context, Routes.signUpRoute),
-                    child: Text(
-                      "Sign Up",
-                      style: ThemeText.heading3
-                          .copyWith(color: ColorManager.primaryColor),
+                    CustomSosMedSignIn(
+                      imageUrl: "assets/icons/google_icon.png",
+                      title: "Google",
+                      press: () {},
                     ),
-                  )
-                ],
-              )
-            ],
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't Have An Account? ",
+                      style: ThemeText.heading3,
+                    ),
+                    GestureDetector(
+                      onTap: () =>
+                          Navigator.pushNamed(context, Routes.signUpRoute),
+                      child: Text(
+                        "Sign Up",
+                        style: ThemeText.heading3
+                            .copyWith(color: ColorManager.primaryColor),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

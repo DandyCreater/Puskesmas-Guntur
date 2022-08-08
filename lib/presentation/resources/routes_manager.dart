@@ -33,7 +33,7 @@ class RouteGenerator {
       case Routes.articleRoute:
         return PageTransition(
           child: const ArticlePage(),
-          type: PageTransitionType.leftToRightWithFade,
+          type: PageTransitionType.fade,
           duration: const Duration(seconds: 1),
         );
       default:

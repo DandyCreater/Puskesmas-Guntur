@@ -1,0 +1,62 @@
+{
+    "ResponseStatus": "OK",
+    "OKContentUser": {
+        "user": [
+            {
+                "email": "azkamr1999@gmail.com",
+                "password": "puskesmasguntur",
+                "name": "Azka",
+                "age": "22",
+                "gender": "Pria",
+                "phoneNum": "6289606801579",
+                "bornDate": "01/01/1999",
+                "bpjsNum": "0402480285",
+                "address": "Kp.Cinta Damai Kel.Lorem Ipsum RT.XX RW.XX Jawa Barat, Indonesia"
+            },
+            {
+                "email": "dandythirst22@gmail.com",
+                "password": "puskesmasguntur",
+                "name": "Dandy",
+                "age": "23",
+                "gender": "Pria",
+                "phoneNum": "6287781433687",
+                "bornDate": "01/01/1999",
+                "bpjsNum": "0402480285",
+                "address": "Jl. Ketapang Rawa Gatel Cluster Pandan No.111, Indonesia"
+            },
+            {
+                "email": "abdulazizpermana106@gmail.com",
+                "password": "puskesmasguntur",
+                "name": "Abdul Aziz Permana",
+                "age": "22",
+                "gender": "Pria",
+                "phoneNum": "6285156536282",
+                "bornDate": "01/01/1999",
+                "bpjsNum": "0402480285",
+                "address": "Kp.Cinta Damai Kel.Lorem Ipsum RT.XX RW.XX Jawa Barat, Indonesia"
+            },
+            {
+                "email": "alifandarta26@gmail.com",
+                "password": "puskesmasguntur",
+                "name": "Alif Andarta",
+                "age": "22",
+                "gender": "Pria",
+                "phoneNum": "6281217915595",
+                "bornDate": "01/01/1999",
+                "bpjsNum": "0402480285",
+                "address": "Kp.Cinta Damai Kel.Lorem Ipsum RT.XX RW.XX Jawa Barat, Indonesia"
+            },
+            {
+                "email": "asepwibowo1906@gmail.com",
+                "password": "puskesmasguntur",
+                "name": "Alif Andarta",
+                "age": "22",
+                "gender": "Pria",
+                "phoneNum": "6289691107832",
+                "bornDate": "01/01/1999",
+                "bpjsNum": "0402480285",
+                "address": "Kp.Cinta Damai Kel.Lorem Ipsum RT.XX RW.XX Jawa Barat, Indonesia"
+            }
+        ]
+    }
+}

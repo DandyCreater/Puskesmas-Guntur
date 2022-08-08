@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
-import 'package:puskesmas_guntur/presentation/widges/at_signUp-Page/customSosMedSignUp.dart';
+import 'package:puskesmas_guntur/presentation/widget/at_signUp-Page/customSosMedSignUp.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);

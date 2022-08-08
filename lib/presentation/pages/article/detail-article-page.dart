@@ -40,7 +40,7 @@ class DetailArticlePage extends StatelessWidget {
 
     Widget locationTime() {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
@@ -147,13 +147,16 @@ class DetailArticlePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          title.toUpperCase(),
-          style: ThemeText.heading2.copyWith(
-            color: ColorManager.blackTextColor,
+        title: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 20, 8, 10),
+          child: Text(
+            title.toUpperCase(),
+            style: ThemeText.heading2.copyWith(
+              color: ColorManager.blackTextColor,
+            ),
+            maxLines: 2,
+            textAlign: TextAlign.center,
           ),
-          maxLines: 2,
-          textAlign: TextAlign.center,
         ),
         centerTitle: true,
         backgroundColor: ColorManager.appBarColor,
@@ -176,31 +179,35 @@ class DetailArticlePage extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            imageArticle(),
-            const SizedBox(
-              height: 27,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                imageArticle(),
+                const SizedBox(
+                  height: 27,
+                ),
+                locationTime(),
+                const SizedBox(
+                  height: 17,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    textContent,
+                    style: ThemeText.heading4.copyWith(
+                      color: ColorManager.blackTextColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 23,
+                ),
+                shareSocMed(),
+              ],
             ),
-            locationTime(),
-            const SizedBox(
-              height: 17,
-            ),
-            Text(
-              textContent,
-              style: ThemeText.heading4.copyWith(
-                color: ColorManager.blackTextColor,
-              ),
-            ),
-            const SizedBox(
-              height: 23,
-            ),
-            shareSocMed(),
-          ],
-        ),
-      )),
+          )),
     );
   }
 }
