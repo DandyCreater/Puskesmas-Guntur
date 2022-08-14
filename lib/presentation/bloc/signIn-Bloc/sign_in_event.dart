@@ -17,3 +17,13 @@ class FetchSignIn extends SignInEvent {
   // TODO: implement props
   List<Object> get props => [email!, password!];
 }
+
+class UserFetch extends SignInEvent {
+  final OKContentUser? userData;
+
+  const UserFetch({required this.userData});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [userData!];
+}

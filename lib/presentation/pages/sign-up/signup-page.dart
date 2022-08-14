@@ -276,18 +276,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         width: 8,
                       ),
                       Text(
-                        "Remember Me",
-                        style: ThemeText.heading2,
+                        "I Agree To The Terms And Condition",
+                        style: ThemeText.heading2.copyWith(fontSize: 12),
                       ),
                     ],
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Forgot Password?",
-                      style: ThemeText.heading3
-                          .copyWith(color: ColorManager.redTextColor),
-                    ),
                   ),
                 ],
               ),
@@ -305,7 +297,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius: BorderRadius.circular(10)))),
                     onPressed: () {},
                     child: Text(
-                      "LOGIN",
+                      "SIGN UP",
                       style: ThemeText.heading2.copyWith(
                         color: ColorManager.whiteTextColor,
                       ),
@@ -326,7 +318,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   Text(
-                    "Or Login With",
+                    "Or Sign Up With",
                     style: ThemeText.heading2,
                   ),
                   Container(

@@ -1,0 +1,62 @@
+{
+    "ResponseStatus": "OK",
+    "OKContentPelayan": {
+        "pelayanan": [
+            {
+                "imageUrl": "assets/icons/icon_persalinan.png",
+                "title": "Persalinan",
+                "date": "Senin - Jumat",
+                "time": "24 Jam"
+            },
+            {
+                "imageUrl": "assets/icons/icon_poliumum.png",
+                "title": "Poli Umum",
+                "date": "Senin - Jumat",
+                "time": "08.00 - 14.00"
+            },
+            {
+                "imageUrl": "assets/icons/icon_pemeriksaan.png",
+                "title": "Pemeriksaan Jiwa",
+                "date": "Senin - Jumat",
+                "time": "08.00 - 14.00"
+            },
+            {
+                "imageUrl": "assets/icons/icon_obat.png",
+                "title": "Pelayanan Obat",
+                "date": "Senin - Kamis",
+                "time": "08.00 - 14.00"
+            },
+            {
+                "imageUrl": "assets/icons/icon_lab.png",
+                "title": "Laboratorium",
+                "date": "Senin - Jumat",
+                "time": "08.00 - 14.00"
+            },
+            {
+                "imageUrl": "assets/icons/icon_paru.png",
+                "title": "TB Paru",
+                "date": "Senin - Jumat",
+                "time": "08.00 - 14.00"
+            },
+            {
+                "imageUrl": "assets/icons/icon_imunisasi.png",
+                "title": "Imunisasi",
+                "date": "Senin - Kamis",
+                "time": "08.00 - 11.00"
+            },
+            {
+                "imageUrl": "assets/icons/icon_gigi.png",
+                "title": "Poli Gigi",
+                "date": "Senin - Jumat",
+                "time": "08.00 - 11.30"
+            },
+            {
+                "imageUrl": "assets/icons/icon_gizi.png",
+                "title": "Konsultasi Gizi",
+                "date": "Selasa & Rabu",
+                "time": "08.00 - 14.00"
+            }
+        ]
+    },
+    "failContent": ""
+}

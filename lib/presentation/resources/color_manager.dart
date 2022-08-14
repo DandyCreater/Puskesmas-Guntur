@@ -12,4 +12,5 @@ class ColorManager {
   static Color blackTextColor = const Color(0xff000000);
   static Color redTextColor = const Color(0xffF62024);
   static Color whiteTextColor = const Color(0xffFFFFFF);
+  static Color blueSaveTextColor = const Color(0xff01A4FF);
 }

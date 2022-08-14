@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+
 import 'package:puskesmas_guntur/domain/model/user-model/user_model.dart';
 
 class LoginHelper {
@@ -35,5 +36,25 @@ class LoginHelper {
       result = "Login Berhasil";
     }
     return result;
+  }
+
+  Future<List<User>> userProcess(String email, String password) async {
+    final jsonData = await rootBundle.loadString("assets/json/user.json");
+    final dataDecode = jsonDecode(jsonData);
+    var data = OKContentUser.fromJson(dataDecode["OKContentUser"]);
+
+    List<User>? oldData = data.user;
+    List<User>? finalData = [];
+
+    var check = oldData!
+        .where((element) =>
+            element.email!.toLowerCase().contains(email) &&
+            element.password!.toLowerCase().contains(password))
+        .toList();
+    for (var items in check) {
+      finalData.add(items);
+    }
+
+    return finalData;
   }
 }

@@ -11,7 +11,15 @@ class SignInInitial extends SignInState {}
 
 class SignInLoading extends SignInState {}
 
-class SignInSuccess extends SignInState {}
+class SignInSuccess extends SignInState {
+  final OKContentUser? user;
+
+  const SignInSuccess({this.user});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [user!];
+}
 
 class SignInFailed extends SignInState {
   final String? message;

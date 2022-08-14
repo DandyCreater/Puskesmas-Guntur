@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
@@ -172,7 +173,7 @@ class _SignInPageState extends State<SignInPage> {
           } else if (state is SignInSuccess) {
             Future.delayed(const Duration(seconds: 2)).then((value) =>
                 Navigator.pushNamedAndRemoveUntil(
-                    context, Routes.articleRoute, (route) => false));
+                    context, Routes.mainPageRoute, (route) => false));
           } else if (state is SignInFailed) {
             _showAlertDialog(context, "Email / Password Salah");
             emailController.text = "";

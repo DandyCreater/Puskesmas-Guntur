@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/article-Bloc/article_bloc.dart';
+import 'package:puskesmas_guntur/presentation/bloc/carousel-Bloc/carousel_bloc.dart';
+import 'package:puskesmas_guntur/presentation/bloc/pelayanan-Bloc/pelayanan_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
 
@@ -24,7 +26,13 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: ((_) => SignInBloc())),
 
         //Article Bloc
-        BlocProvider(create: ((_) => ArticleBloc()..add(FetchArticle())))
+        BlocProvider(create: ((_) => ArticleBloc()..add(FetchArticle()))),
+
+        //Carousel Bloc
+        BlocProvider(create: ((_) => CarouselBloc()..add(FetchCarousel()))),
+
+        //Pelayanan Bloc
+        BlocProvider(create: ((_) => PelayananBloc()..add(FetchPelayanan())))
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
