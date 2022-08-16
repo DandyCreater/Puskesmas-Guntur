@@ -32,7 +32,9 @@ class ArticleCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: height * 0.22,
-            padding: const EdgeInsets.fromLTRB(5, 9, 5, 9),
+            padding: EdgeInsets.symmetric(
+                horizontal: width * 0.04, vertical: height * 0.03),
+            // padding: const EdgeInsets.fromLTRB(5, 9, 5, 9),
             decoration: BoxDecoration(
               color: ColorManager.whiteTextColor,
               border: Border.all(
@@ -56,12 +58,22 @@ class ArticleCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                ClipRRect(
+                Container(
+                  height: height * 0.5,
+                  width: width * 0.25,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      imageUrl,
-                      scale: 3.5,
-                    )),
+                    image: DecorationImage(
+                        image: AssetImage(imageUrl), fit: BoxFit.cover),
+                  ),
+                ),
+
+                // ClipRRect(
+                //     borderRadius: BorderRadius.circular(10),
+                //     child: Image.asset(
+                //       imageUrl,
+                //       scale: 3.5,
+                //     )),
                 const SizedBox(
                   width: 15,
                 ),

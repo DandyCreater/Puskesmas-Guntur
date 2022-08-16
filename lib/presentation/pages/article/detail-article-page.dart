@@ -197,6 +197,7 @@ class DetailArticlePage extends StatelessWidget {
                   child: Text(
                     textContent,
                     style: ThemeText.heading4.copyWith(
+                      fontSize: 14,
                       color: ColorManager.blackTextColor,
                     ),
                   ),

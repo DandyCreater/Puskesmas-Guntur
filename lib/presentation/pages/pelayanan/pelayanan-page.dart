@@ -15,6 +15,7 @@ class PelayananPage extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: ColorManager.whiteTextColor,
       appBar: AppBar(
         title: Text(
           'PELAYANAN',
@@ -40,11 +41,11 @@ class PelayananPage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Column(
             children: [
               Container(
-                height: height * 0.078,
+                height: height * 0.079,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
@@ -88,7 +89,7 @@ class PelayananPage extends StatelessWidget {
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),

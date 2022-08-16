@@ -7,6 +7,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:input_history_text_field/input_history_text_field.dart';
 import 'package:puskesmas_guntur/presentation/bloc/article-Bloc/article_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/carousel-Bloc/carousel_bloc.dart';
 import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
@@ -29,13 +30,30 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   ScrollController controller = ScrollController(initialScrollOffset: 0);
   double scrollController = 0.0;
+  bool search = false;
+  bool tap = false;
   var index = 0;
+
+  // _tapFunction() {
+  //   setState(() {
+  //     tap = !tap;
+  //   });
+  // }
+
+  _searchFunction() {
+    setState(() {
+      search = !search;
+      tap = !tap;
+    });
+    print(tap);
+  }
 
   _listener() {
     final aboutScroll = controller.position.minScrollExtent;
-    final pelayananScroll = controller.position.maxScrollExtent * 0.5;
-    final artikelScroll = controller.position.maxScrollExtent * 0.84;
-    final pengaduanScroll = controller.position.maxScrollExtent;
+    final pelayananScroll = controller.position.maxScrollExtent * 0.25;
+    final artikelScroll = controller.position.maxScrollExtent * 0.4;
+    final pengaduanScroll = controller.position.maxScrollExtent * 0.65;
+    final kontakScroll = controller.position.maxScrollExtent;
 
     if (controller.offset == aboutScroll &&
         controller.offset < pelayananScroll) {
@@ -44,26 +62,37 @@ class _HomePageState extends State<HomePage> {
       });
     }
     if (controller.offset > pelayananScroll &&
-        controller.offset < artikelScroll) {
+            controller.offset < artikelScroll ||
+        controller.offset == pelayananScroll) {
       setState(() {
         index = 1;
       });
     }
     if (controller.offset > artikelScroll &&
-        controller.offset < pengaduanScroll) {
+            controller.offset < pengaduanScroll ||
+        controller.offset == artikelScroll) {
       setState(() {
         index = 2;
       });
     }
-    if (controller.offset == pengaduanScroll) {
+    if (controller.offset > pengaduanScroll &&
+            controller.offset < kontakScroll ||
+        controller.offset == pengaduanScroll) {
       setState(() {
         index = 3;
+      });
+    }
+    if (controller.offset == kontakScroll) {
+      setState(() {
+        index = 4;
       });
     }
   }
 
   @override
   void initState() {
+    _searchFunction();
+    // _tapFunction();
     controller.addListener(_listener);
     super.initState();
   }
@@ -205,7 +234,7 @@ class _HomePageState extends State<HomePage> {
               height: height * 0.02,
             ),
             SizedBox(
-              height: height * 0.72,
+              height: height * 0.47,
               child: BlocBuilder<ArticleBloc, ArticleState>(
                 builder: (context, state) {
                   if (state is ArticleSuccess) {
@@ -257,7 +286,243 @@ class _HomePageState extends State<HomePage> {
           ],
         );
 
+    Widget pengaduan() => Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "PENGADUAN",
+                  style: ThemeText.heading2,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.articleRoute);
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.pengaduanRoute);
+                    },
+                    child: Text("Lebih Banyak",
+                        style: ThemeText.heading3
+                            .copyWith(color: ColorManager.secondaryColor)),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            Container(
+              width: double.infinity,
+              height: height * 0.33,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/pengaduan_img.png"),
+                      fit: BoxFit.cover)),
+            )
+          ],
+        );
+
+    Widget kontak() => Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "KONTAK",
+                  style: ThemeText.heading2,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.articleRoute);
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.contactRoute);
+                    },
+                    child: Text("Lebih Banyak",
+                        style: ThemeText.heading3
+                            .copyWith(color: ColorManager.secondaryColor)),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              width: double.infinity,
+              height: height * 0.33,
+              decoration: BoxDecoration(
+                  color: ColorManager.whiteTextColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                        offset: const Offset(0, 1),
+                        color: ColorManager.blackprimaryColor.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 1)
+                  ]),
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(
+                      "Hubungi Kami",
+                      style: ThemeText.heading2,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage("assets/icons/icon_phone.png"),
+                        )),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        "(0262)232265",
+                        style: ThemeText.heading2.copyWith(fontSize: 12),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage("assets/icons/whatsapp_icon.png"),
+                        )),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        "08211783967",
+                        style: ThemeText.heading2.copyWith(fontSize: 12),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage("assets/icons/icon_gmail.png"),
+                        )),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        "Puskesmasguntur24@gmail.com",
+                        style: ThemeText.heading2.copyWith(fontSize: 12),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage("assets/icons/icon_address.png"),
+                        )),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        "Jl. Guntur No.234, Garut Jawa Barat",
+                        style: ThemeText.heading2.copyWith(fontSize: 12),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        );
+
+    Widget searchTextField() => InputHistoryTextField(
+          historyKey: "01",
+          // ignore: prefer_const_literals_to_create_immutables
+          lockItems: ['Artikel', 'Info Aplikasi', 'Pelayanan', 'BPJS'],
+          showHistoryIcon: true,
+          showDeleteIcon: false,
+          historyIcon: Icons.search,
+          listStyle: ListStyle.List,
+          listDecoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20)),
+            color: ColorManager.searchTextFieldColor,
+          ),
+          decoration: InputDecoration(
+              prefixIcon: GestureDetector(
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Icon(
+                    Icons.search,
+                    color: ColorManager.secondaryColor,
+                    size: 30,
+                  ),
+                ),
+              ),
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  _searchFunction();
+                },
+                child: Icon(
+                  Icons.close,
+                  color: ColorManager.secondaryColor,
+                  size: 30,
+                ),
+              ),
+              contentPadding: const EdgeInsets.fromLTRB(5, 15, 5, 2),
+              isDense: true,
+              isCollapsed: true,
+              fillColor: ColorManager.searchTextFieldColor,
+              filled: true,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                borderSide: BorderSide(color: ColorManager.blackTextColor),
+              )),
+        );
+
     return Scaffold(
+      backgroundColor: ColorManager.whiteTextColor,
       key: _key,
       drawer: const NavBar(),
       body: SingleChildScrollView(
@@ -272,69 +537,80 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: height * 0.1,
                     ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              _key.currentState!.openDrawer();
-                            },
-                            child: Icon(
-                              Icons.menu_rounded,
-                              color: ColorManager.secondaryColor,
-                              size: height * 0.06,
-                            ),
-                          ),
-                          Text(
-                            "UPT\nPuskesmas Guntur",
-                            style: ThemeText.heading2
-                                .copyWith(color: ColorManager.secondaryColor),
-                            textAlign: TextAlign.center,
-                          ),
-                          Icon(
-                            Icons.search,
-                            size: height * 0.06,
-                            color: ColorManager.secondaryColor,
-                          )
-                        ]),
+                    (search)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _key.currentState!.openDrawer();
+                                  },
+                                  child: Icon(
+                                    Icons.menu_rounded,
+                                    color: ColorManager.secondaryColor,
+                                    size: height * 0.06,
+                                  ),
+                                ),
+                                Text(
+                                  "UPT\nPuskesmas Guntur",
+                                  style: ThemeText.heading2.copyWith(
+                                      color: ColorManager.secondaryColor),
+                                  textAlign: TextAlign.center,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _searchFunction();
+                                  },
+                                  child: Icon(Icons.search,
+                                      size: height * 0.06,
+                                      color: ColorManager.secondaryColor),
+                                )
+                              ])
+                        : searchTextField(),
                   ],
                 ),
               ),
               const SizedBox(
                 height: 18,
               ),
-              BlocBuilder<CarouselBloc, CarouselState>(
-                builder: (context, state) {
-                  if (state is CarouselLoaded) {
-                    var items = state.okContentCarousel.carousel;
-                    return SizedBox(
-                        height: height * 0.27,
-                        child: CarouselSlider.builder(
-                          itemCount: items!.length,
-                          itemBuilder: (BuildContext context, int itemIndex,
-                                  pageViewIndex) =>
-                              Container(
-                            height: height * 0.25,
-                            width: width * 0.9,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        items[itemIndex].imageUrl.toString()),
-                                    fit: BoxFit.cover)),
-                          ),
-                          options: CarouselOptions(
-                              aspectRatio: 2.0,
-                              viewportFraction: 1,
-                              pauseAutoPlayOnManualNavigate: true,
-                              autoPlay: true,
-                              scrollDirection: Axis.horizontal),
-                        ));
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: BlocBuilder<CarouselBloc, CarouselState>(
+                  builder: (context, state) {
+                    if (state is CarouselLoaded) {
+                      var items = state.okContentCarousel.carousel;
+                      return SizedBox(
+                          height: height * 0.27,
+                          width: width,
+                          child: CarouselSlider.builder(
+                            itemCount: items!.length,
+                            itemBuilder: (BuildContext context, int itemIndex,
+                                    pageViewIndex) =>
+                                Container(
+                              height: height * 0.25,
+                              width: width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          items[itemIndex].imageUrl.toString()),
+                                      fit: BoxFit.cover)),
+                            ),
+                            options: CarouselOptions(
+                                viewportFraction: 1,
+                                enlargeStrategy:
+                                    CenterPageEnlargeStrategy.scale,
+                                enlargeCenterPage: true,
+                                pauseAutoPlayOnManualNavigate: true,
+                                autoPlay: true,
+                                scrollDirection: Axis.horizontal),
+                          ));
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
               ),
               SizedBox(
                 height: height * 0.02,
@@ -351,79 +627,185 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: height * 0.03,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomButtonNav(
-                            imageUrl: "assets/images/icon_about.png",
-                            title: "Tentang\nKami",
-                            color: (index == 0)
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          CustomButtonNav(
+                              imageUrl: "assets/images/icon_about.png",
+                              title: "Tentang\nKami",
+                              color: (index == 0)
+                                  ? ColorManager.whiteTextColor
+                                  : ColorManager.blackprimaryColor,
+                              press: () {
+                                controller.animateTo(
+                                    controller.position.minScrollExtent,
+                                    duration: const Duration(seconds: 1),
+                                    curve: Curves.fastOutSlowIn);
+                              },
+                              backgroundColor: (index == 0)
+                                  ? ColorManager.primaryColor
+                                  : ColorManager.secondaryColor
+                                      .withOpacity(0.2)),
+                          SizedBox(
+                            width: width * 0.03,
+                          ),
+                          CustomButtonNav(
+                              imageUrl: "assets/images/icon_service.png",
+                              title: "Pelayanan",
+                              color: (index == 1)
+                                  ? ColorManager.whiteTextColor
+                                  : ColorManager.blackprimaryColor,
+                              press: () {
+                                (index == 1)
+                                    ? () {}
+                                    : (index == 2)
+                                        ? controller.animateTo(
+                                            controller.position.maxScrollExtent *
+                                                0.25,
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            curve: Curves.fastOutSlowIn)
+                                        : (index == 3)
+                                            ? controller.animateTo(
+                                                controller.position.maxScrollExtent *
+                                                    0.29,
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                                curve: Curves.fastOutSlowIn)
+                                            : (index == 4)
+                                                ? controller.animateTo(
+                                                    controller.position
+                                                            .maxScrollExtent *
+                                                        0.3,
+                                                    duration: const Duration(
+                                                        seconds: 1),
+                                                    curve: Curves.fastOutSlowIn)
+                                                : controller.animateTo(
+                                                    controller.position.maxScrollExtent * 0.32,
+                                                    duration: const Duration(seconds: 1),
+                                                    curve: Curves.fastOutSlowIn);
+                              },
+                              backgroundColor: (index == 1)
+                                  ? ColorManager.primaryColor
+                                  : ColorManager.secondaryColor
+                                      .withOpacity(0.2)),
+                          SizedBox(
+                            width: width * 0.03,
+                          ),
+                          CustomButtonNav(
+                            imageUrl: "assets/images/icon_artikel.png",
+                            title: "Artikel",
+                            color: (index == 2)
+                                ? ColorManager.whiteTextColor
+                                : ColorManager.blackTextColor,
+                            press: () {
+                              (index == 2)
+                                  ? () {}
+                                  : (index == 1)
+                                      ? controller.animateTo(
+                                          controller.position.maxScrollExtent *
+                                              0.46,
+                                          duration: const Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn)
+                                      : (index == 3)
+                                          ? controller.animateTo(
+                                              controller.position
+                                                      .maxScrollExtent *
+                                                  0.49,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              curve: Curves.fastOutSlowIn)
+                                          : (index == 4)
+                                              ? controller.animateTo(
+                                                  controller.position
+                                                          .maxScrollExtent *
+                                                      0.49,
+                                                  duration: const Duration(
+                                                      seconds: 1),
+                                                  curve: Curves.fastOutSlowIn)
+                                              : controller.animateTo(
+                                                  controller.position.maxScrollExtent * 0.52,
+                                                  duration: const Duration(seconds: 1),
+                                                  curve: Curves.fastOutSlowIn);
+                            },
+                            backgroundColor: (index == 2)
+                                ? ColorManager.primaryColor
+                                : ColorManager.secondaryColor.withOpacity(0.2),
+                          ),
+                          SizedBox(
+                            width: width * 0.03,
+                          ),
+                          CustomButtonNav(
+                            imageUrl: "assets/images/icon_pengaduan.png",
+                            title: "Pengaduan",
+                            color: (index == 3)
                                 ? ColorManager.whiteTextColor
                                 : ColorManager.blackprimaryColor,
                             press: () {
-                              controller.animateTo(
-                                  controller.position.minScrollExtent,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.fastOutSlowIn);
+                              (index == 3)
+                                  ? () {}
+                                  : (index == 1)
+                                      ? controller.animateTo(
+                                          controller.position.maxScrollExtent *
+                                              0.75,
+                                          duration: const Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn)
+                                      : (index == 2)
+                                          ? controller.animateTo(
+                                              controller.position
+                                                      .maxScrollExtent *
+                                                  0.68,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              curve: Curves.fastOutSlowIn)
+                                          : (index == 4)
+                                              ? controller.animateTo(
+                                                  controller.position
+                                                          .maxScrollExtent *
+                                                      0.80,
+                                                  duration: const Duration(
+                                                      seconds: 1),
+                                                  curve: Curves.fastOutSlowIn)
+                                              : controller.animateTo(
+                                                  controller.position.maxScrollExtent * 0.85,
+                                                  duration: const Duration(seconds: 1),
+                                                  curve: Curves.fastOutSlowIn);
                             },
-                            backgroundColor: (index == 0)
+                            backgroundColor: (index == 3)
                                 ? ColorManager.primaryColor
-                                : ColorManager.secondaryColor.withOpacity(0.2)),
-                        CustomButtonNav(
-                            imageUrl: "assets/images/icon_service.png",
-                            title: "Pelayanan",
-                            color: (index == 1)
+                                : ColorManager.secondaryColor.withOpacity(0.2),
+                          ),
+                          SizedBox(
+                            width: width * 0.03,
+                          ),
+                          CustomButtonNav(
+                            imageUrl: "assets/icons/icon_contacts.png",
+                            title: "Kontak",
+                            color: (index == 4)
                                 ? ColorManager.whiteTextColor
                                 : ColorManager.blackprimaryColor,
                             press: () {
-                              controller.animateTo(
-                                  controller.position.maxScrollExtent * 0.5,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.fastOutSlowIn);
+                              (index == 4)
+                                  ? () {}
+                                  : controller.animateTo(
+                                      controller.position.maxScrollExtent * 1.3,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.fastOutSlowIn);
                             },
-                            backgroundColor: (index == 1)
+                            backgroundColor: (index == 4)
                                 ? ColorManager.primaryColor
-                                : ColorManager.secondaryColor.withOpacity(0.2)),
-                        CustomButtonNav(
-                          imageUrl: "assets/images/icon_artikel.png",
-                          title: "Artikel",
-                          color: (index == 2)
-                              ? ColorManager.whiteTextColor
-                              : ColorManager.blackTextColor,
-                          press: () {
-                            controller.animateTo(
-                                controller.position.maxScrollExtent * 0.84,
-                                duration: const Duration(seconds: 1),
-                                curve: Curves.fastOutSlowIn);
-                          },
-                          backgroundColor: (index == 2)
-                              ? ColorManager.primaryColor
-                              : ColorManager.secondaryColor.withOpacity(0.2),
-                        ),
-                        CustomButtonNav(
-                          imageUrl: "assets/images/icon_pengaduan.png",
-                          title: "Pengaduan",
-                          color: (index == 3)
-                              ? ColorManager.whiteTextColor
-                              : ColorManager.blackprimaryColor,
-                          press: () {
-                            Navigator.pushNamed(context, Routes.pengaduanRoute);
-                            controller.animateTo(
-                                controller.position.maxScrollExtent,
-                                duration: const Duration(seconds: 1),
-                                curve: Curves.fastOutSlowIn);
-                          },
-                          backgroundColor: (index == 3)
-                              ? ColorManager.primaryColor
-                              : ColorManager.secondaryColor.withOpacity(0.2),
-                        )
-                      ],
+                                : ColorManager.secondaryColor.withOpacity(0.2),
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     SizedBox(
-                      height: height * 0.6,
+                      height: height * 0.5,
                       child: NotificationListener(
                         child: ListView(
                           controller: controller,
@@ -435,9 +817,20 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Pelayanan(),
                             SizedBox(
-                              height: height * 0.03,
+                              height: height * 0.04,
                             ),
                             Artikel(),
+                            SizedBox(
+                              height: height * 0.04,
+                            ),
+                            pengaduan(),
+                            SizedBox(
+                              height: height * 0.04,
+                            ),
+                            kontak(),
+                            SizedBox(
+                              height: height * 0.04,
+                            ),
                           ],
                         ),
                       ),

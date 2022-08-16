@@ -13,4 +13,7 @@ class ColorManager {
   static Color redTextColor = const Color(0xffF62024);
   static Color whiteTextColor = const Color(0xffFFFFFF);
   static Color blueSaveTextColor = const Color(0xff01A4FF);
+
+  //TextField Color
+  static Color searchTextFieldColor = const Color(0xffE3E3E3);
 }

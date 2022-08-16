@@ -4,6 +4,7 @@ import 'package:puskesmas_guntur/presentation/pages/article/article-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/contact/contact_page.dart';
 import 'package:puskesmas_guntur/presentation/pages/homepage/homepage.dart';
+import 'package:puskesmas_guntur/presentation/pages/info-aplikasi/infoaplikasi-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/mainpage.dart';
 import 'package:puskesmas_guntur/presentation/pages/pelayanan/pelayanan-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/pengaduan/pengaduan-page.dart';
@@ -13,6 +14,7 @@ import 'package:puskesmas_guntur/presentation/pages/sign-in/signin-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-up/signup-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/splashpage/splashpage.dart';
 import 'package:puskesmas_guntur/presentation/pages/tentang-kami/tentangkami_page.dart';
+import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 
 class Routes {
   static const String splashRoute = "/";
@@ -28,6 +30,7 @@ class Routes {
   static const String contactRoute = '/contact';
   static const String editProfileRoute = '/edit';
   static const String pengaduanRoute = '/pengaduan';
+  static const String infoAppsRoute = '/info';
 }
 
 class RouteGenerator {
@@ -83,12 +86,18 @@ class RouteGenerator {
           type: PageTransitionType.fade,
           duration: const Duration(seconds: 1),
         );
+      case Routes.infoAppsRoute:
+        return PageTransition(
+          child: const InfoAplikasiPage(),
+          type: PageTransitionType.fade,
+          duration: const Duration(seconds: 1),
+        );
       case Routes.mainPageRoute:
         return MaterialPageRoute(builder: (_) => const MainPage());
       case Routes.homePageRoute:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case Routes.profileRoute:
-        return MaterialPageRoute(builder: (_) => ProfilePage());
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
 
       default:
         return unDefinedRoute();
@@ -99,11 +108,20 @@ class RouteGenerator {
     return MaterialPageRoute(
         builder: (_) => Scaffold(
               appBar: AppBar(
-                title: const Text(
-                  "Route Tidak ada",
+                backgroundColor: ColorManager.appBarColor,
+                iconTheme: IconThemeData(
+                  color: ColorManager.secondaryColor,
                 ),
               ),
-              body: const Center(child: Text("No Routes Found")),
+              body: Center(
+                  child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/img_comesoon.png"),
+                        fit: BoxFit.cover)),
+              )),
             ));
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:puskesmas_guntur/presentation/pages/bpjs/bpjs-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/homepage/homepage.dart';
-import 'package:puskesmas_guntur/presentation/pages/jadwal/jadwal_dokter_page.dart';
 import 'package:puskesmas_guntur/presentation/pages/profile/profile_page.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 
@@ -17,7 +18,7 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   var pages = [
     const HomePage(),
-    const JadwalDokterPage(),
+    const BPJSPage(),
     const ProfilePage(),
   ];
 
@@ -43,16 +44,23 @@ class _MainPageState extends State<MainPage> {
                 ),
                 label: "Home"),
             BottomNavigationBarItem(
-                activeIcon: Icon(
-                  Icons.calendar_month,
-                  color: ColorManager.primaryColor,
-                  size: 20,
+                activeIcon: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/icons/icon_bpjs.png"),
+                          fit: BoxFit.cover)),
                 ),
-                icon: Icon(
-                  Icons.calendar_month,
-                  color: ColorManager.secondaryColor,
+                icon: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/icons/icon_bpjs.png"),
+                          fit: BoxFit.cover)),
                 ),
-                label: "Jadwal Dokter"),
+                label: "BPJS"),
             BottomNavigationBarItem(
                 activeIcon: Icon(
                   Icons.person,

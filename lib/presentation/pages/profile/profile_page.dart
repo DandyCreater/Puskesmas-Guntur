@@ -38,7 +38,7 @@ class ProfilePage extends StatelessWidget {
             color: ColorManager.primaryColor,
           ),
           onPressed: () {
-            Navigator.pushNamed(context, Routes.homePageRoute);
+            Navigator.pushNamed(context, Routes.mainPageRoute);
           },
         ),
       ),

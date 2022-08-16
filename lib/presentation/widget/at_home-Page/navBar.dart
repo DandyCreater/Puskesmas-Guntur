@@ -16,13 +16,17 @@ class NavBar extends StatelessWidget {
       child: ListView(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(20),
-                height: height * 0.22,
+                padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.04, vertical: height * 0.03),
+                height: height * 0.15,
                 decoration: BoxDecoration(color: ColorManager.secondaryColor),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
                       children: [
@@ -42,39 +46,6 @@ class NavBar extends StatelessWidget {
                     ),
                     const SizedBox(
                       height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 80),
-                      child: SizedBox(
-                        height: 45,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: ColorManager.secondaryColor,
-                              size: 30,
-                            ),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(10, 10, 5, 10),
-                            fillColor: ColorManager.whiteTextColor,
-                            hintText: "Search",
-                            hintStyle: ThemeText.heading3.copyWith(
-                              color: ColorManager.secondaryColor,
-                              fontSize: 16,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  color: ColorManager.secondaryColor),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                    color: ColorManager.secondaryColor)),
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -154,7 +125,9 @@ class NavBar extends StatelessWidget {
                       height: 15,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.infoAppsRoute);
+                      },
                       child: Row(
                         children: [
                           Image.asset("assets/images/icon_importance.png"),
@@ -199,9 +172,12 @@ class NavBar extends StatelessWidget {
               SizedBox(
                 height: height * 0.14,
               ),
-              Text(
-                "Versi 1.0.0",
-                style: ThemeText.heading2,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  "Versi 1.0.0",
+                  style: ThemeText.heading2,
+                ),
               )
             ],
           ),
