@@ -12,9 +12,9 @@ class SignInInitial extends SignInState {}
 class SignInLoading extends SignInState {}
 
 class SignInSuccess extends SignInState {
-  final OKContentUser? user;
+  final UserModel? user;
 
-  const SignInSuccess({this.user});
+  const SignInSuccess({required this.user});
 
   @override
   // TODO: implement props

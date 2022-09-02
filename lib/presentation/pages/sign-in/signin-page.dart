@@ -1,10 +1,9 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
 import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
@@ -22,16 +21,36 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isObsecure = false;
-  bool _isChecked = true;
+  late bool isChecked;
+
+  initStatus() {
+    var data = Hive.box("User");
+    emailController.text = data.get("email");
+    passwordController.text = data.get("password");
+    isChecked = data.get("check");
+    (isChecked == null) ? isChecked = false : isChecked = true;
+
+    print(emailController.text);
+    print(passwordController.text);
+  }
 
   _obsecured() {
     _isObsecure = !_isObsecure;
     setState(() {});
   }
 
-  _checked() {
-    _isChecked = !_isChecked;
+  _checked() async {
+    isChecked = !isChecked;
+    print(isChecked);
     setState(() {});
+  }
+
+  rememberMe(bool checked, String email, String password) async {
+    var data = Hive.box("User");
+
+    isChecked ? data.put("check", checked) : data.delete("check");
+    isChecked ? data.put("email", email) : data.delete("email");
+    isChecked ? data.put("password", password) : data.delete("password");
   }
 
   _showAlertDialog(BuildContext context, String message) {
@@ -74,8 +93,9 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     // TODO: implement initState
+
+    initStatus();
     _obsecured();
-    _checked();
     super.initState();
   }
 
@@ -167,14 +187,17 @@ class _SignInPageState extends State<SignInPage> {
       body: BlocListener<SignInBloc, SignInState>(
         listener: (context, state) {
           if (state is SignInLoading) {
-            Center(
+            print("Sign In : $state");
+            const Center(
               child: CircularProgressIndicator(),
             );
           } else if (state is SignInSuccess) {
+            print("Sign In Success: $state");
             Future.delayed(const Duration(seconds: 2)).then((value) =>
                 Navigator.pushNamedAndRemoveUntil(
                     context, Routes.mainPageRoute, (route) => false));
           } else if (state is SignInFailed) {
+            print("Sign In Failed : $state");
             _showAlertDialog(context, "Email / Password Salah");
             emailController.text = "";
             passwordController.text = "";
@@ -268,7 +291,11 @@ class _SignInPageState extends State<SignInPage> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: _checked,
+                          onTap: () {
+                            _checked();
+                            rememberMe(isChecked, emailController.text,
+                                passwordController.text);
+                          },
                           child: Container(
                             height: 30,
                             width: 30,
@@ -278,7 +305,7 @@ class _SignInPageState extends State<SignInPage> {
                               border: Border.all(
                                   color: ColorManager.blackprimaryColor),
                             ),
-                            child: _isChecked
+                            child: isChecked
                                 ? Icon(
                                     Icons.check,
                                     color: ColorManager.secondaryColor,
@@ -296,7 +323,10 @@ class _SignInPageState extends State<SignInPage> {
                       ],
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, Routes.forgotPasswordRoute);
+                      },
                       child: Text(
                         "Forgot Password?",
                         style: ThemeText.heading3
@@ -369,7 +399,10 @@ class _SignInPageState extends State<SignInPage> {
                     CustomSosMedSignIn(
                       imageUrl: "assets/icons/google_icon.png",
                       title: "Google",
-                      press: () {},
+                      press: () {
+                        BlocProvider.of<SignInBloc>(context)
+                            .add(FetchSignInGoogle());
+                      },
                     ),
                   ],
                 ),

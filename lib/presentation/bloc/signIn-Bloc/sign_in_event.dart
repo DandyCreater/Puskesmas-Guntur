@@ -18,12 +18,18 @@ class FetchSignIn extends SignInEvent {
   List<Object> get props => [email!, password!];
 }
 
-class UserFetch extends SignInEvent {
-  final OKContentUser? userData;
+class UpdateUser extends SignInEvent {
+  final UserModel? user;
 
-  const UserFetch({required this.userData});
+  const UpdateUser({this.user});
 
   @override
   // TODO: implement props
-  List<Object> get props => [userData!];
+  List<Object> get props => [user!];
+}
+
+class FetchSignInGoogle extends SignInEvent {
+  @override
+  // TODO: implement props
+  List<Object> get props => super.props;
 }

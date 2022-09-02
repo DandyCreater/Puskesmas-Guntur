@@ -18,12 +18,9 @@ class _SplashPageState extends State<SplashPage> {
   double _animatedWidth = 10.0;
 
   loading() {
-    print(_animatedWidth);
-
     setState(() {
       _animatedWidth = MediaQuery.of(context).size.width;
     });
-    print(_animatedWidth);
   }
 
   @override

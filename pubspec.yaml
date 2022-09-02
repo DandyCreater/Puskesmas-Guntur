@@ -41,6 +41,14 @@ dependencies:
   google_fonts: 3.0.1
   page_transition: ^2.0.9
   input_history_text_field: ^0.1.1
+  cloud_firestore: ^3.4.4
+  firebase_auth: ^3.6.3
+  firebase_core: ^1.20.1
+  hive: ^2.2.3
+  path_provider: ^2.0.11
+  intl: ^0.17.0
+  scroll_to_index: ^3.0.1
+  google_sign_in: ^5.4.1
   
   
   
@@ -50,6 +58,20 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+# dependency_overrides:
+#   firebase_messaging_platform_interface: 3.1.6
+#   firebase_crashlytics_platform_interface: 3.1.13
+#   cloud_firestore_platform_interface: 5.4.13
+#   firebase_auth_platform_interface: 6.1.11
+#   firebase_storage_platform_interface: 4.0.14
+#   cloud_functions_platform_interface: 5.0.21
+#   firebase_analytics_platform_interface: 3.0.5
+#   firebase_remote_config_platform_interface: 1.0.5
+#   firebase_dynamic_links_platform_interface: 0.2.0+5
+#   firebase_performance_platform_interface: 0.1.0+5
+#   firebase_app_installations_platform_interface: 0.1.0+6
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

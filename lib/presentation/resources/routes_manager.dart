@@ -4,12 +4,14 @@ import 'package:puskesmas_guntur/presentation/pages/article/article-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/contact/contact_page.dart';
 import 'package:puskesmas_guntur/presentation/pages/homepage/homepage.dart';
+import 'package:puskesmas_guntur/presentation/pages/hospital/hospital_page.dart';
 import 'package:puskesmas_guntur/presentation/pages/info-aplikasi/infoaplikasi-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/mainpage.dart';
 import 'package:puskesmas_guntur/presentation/pages/pelayanan/pelayanan-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/pengaduan/pengaduan-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/profile/edit_profile.dart';
 import 'package:puskesmas_guntur/presentation/pages/profile/profile_page.dart';
+import 'package:puskesmas_guntur/presentation/pages/sign-in/forgotpassword-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-in/signin-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-up/signup-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/splashpage/splashpage.dart';
@@ -31,6 +33,8 @@ class Routes {
   static const String editProfileRoute = '/edit';
   static const String pengaduanRoute = '/pengaduan';
   static const String infoAppsRoute = '/info';
+  static const String hospitalRoute = '/hospital';
+  static const String forgotPasswordRoute = '/forgot';
 }
 
 class RouteGenerator {
@@ -76,7 +80,7 @@ class RouteGenerator {
         );
       case Routes.editProfileRoute:
         return PageTransition(
-          child: const EditProfilePage(),
+          child: EditProfilePage(),
           type: PageTransitionType.fade,
           duration: const Duration(seconds: 1),
         );
@@ -92,6 +96,19 @@ class RouteGenerator {
           type: PageTransitionType.fade,
           duration: const Duration(seconds: 1),
         );
+      case Routes.hospitalRoute:
+        return PageTransition(
+          child: const HospitalPage(),
+          type: PageTransitionType.fade,
+          duration: const Duration(seconds: 1),
+        );
+      case Routes.forgotPasswordRoute:
+        return PageTransition(
+          child: const ForgotPassword(),
+          type: PageTransitionType.fade,
+          duration: const Duration(seconds: 1),
+        );
+
       case Routes.mainPageRoute:
         return MaterialPageRoute(builder: (_) => const MainPage());
       case Routes.homePageRoute:

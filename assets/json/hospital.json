@@ -1,0 +1,37 @@
+{
+    "ResponseStatus": "OK",
+    "OKContentHospital": {
+        "hospital": [
+            {
+                "imageUrl": "assets/images/hospital_1.png",
+                "title": "RSUD Dr. Slamet",
+                "address": "Jl. Rumah Sakit Umum No.12",
+                "noTelp": "(0262) 541327"
+            },
+            {
+                "imageUrl": "assets/images/hospital_2.png",
+                "title": "Rumah Sakit Guntur",
+                "address": "Jl. Bratayudha No. 101",
+                "noTelp": "(0262) 232325"
+            },
+            {
+                "imageUrl": "assets/images/hospital_3.png",
+                "title": "Rumah Sakit Nuryanti",
+                "address": "Jl. Jendral Sudirman No.6",
+                "noTelp": "(0262) 238966"
+            },
+            {
+                "imageUrl": "assets/images/hospital_4.png",
+                "title": "Rumah Sakit Annisa Queen",
+                "address": "Jl. Jendral Sudirman No.208",
+                "noTelp": "(0262) 489700"
+            },
+            {
+                "imageUrl": "assets/images/hospital_5.png",
+                "title": "Rumah Sakit Medina",
+                "address": "Jl. Wanaraja No.500",
+                "noTelp": "(0262) 2448808"
+            }
+        ]
+    }
+}

@@ -1,7 +1,13 @@
+// ignore_for_file: must_be_immutable, sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:puskesmas_guntur/domain/model/user-model/user_model.dart';
+import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
@@ -9,9 +15,26 @@ import 'package:puskesmas_guntur/presentation/widget/at_profile-Page/TextFieldEd
 import 'package:puskesmas_guntur/presentation/widget/at_profile-Page/TextFieldNumberWidget.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({
+  EditProfilePage({
+    this.name,
+    this.email,
+    this.phoneNum,
+    this.gender,
+    this.bornDate,
+    this.bpjsNum,
+    this.address,
     Key? key,
-  }) : super(key: key);
+  }) : super(
+          key: key,
+        );
+
+  String? name;
+  String? email;
+  String? phoneNum;
+  String? gender;
+  String? bornDate;
+  String? bpjsNum;
+  String? address;
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -21,80 +44,63 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
+
   TextEditingController bornDateController = TextEditingController();
   TextEditingController bpjsNumController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  DateTime selectedTime = DateTime.now();
+  String genderValue = "Laki-laki";
+
+  _profileCondition() {
+    nameController.text = widget.name.toString();
+    emailController.text = widget.email.toString();
+    phoneNumController.text = widget.phoneNum.toString();
+    genderValue = widget.gender.toString();
+    genderValue == "unknown"
+        ? genderValue = "Laki-laki"
+        : genderValue = genderValue;
+    bornDateController.text = widget.bornDate.toString();
+    bpjsNumController.text = widget.bpjsNum.toString();
+    addressController.text = widget.address.toString();
+  }
+
+  Future<void> selectDate(BuildContext context) async {
+    DateTime? newSelected = await showDatePicker(
+      context: context,
+      initialDate: selectedTime,
+      firstDate: DateTime(1945),
+      lastDate: DateTime(2045),
+    );
+
+    if (newSelected != null && newSelected != selectedTime) {
+      selectedTime = newSelected;
+      bornDateController.text =
+          dateFormat.format(selectedTime.toLocal()).split(" ")[0];
+    }
+  }
+
+  List<DropdownMenuItem<String>> items = [
+    const DropdownMenuItem(
+      child: Text("Laki-laki"),
+      value: "Laki-laki",
+    ),
+    const DropdownMenuItem(
+      child: Text("Perempuan"),
+      value: "Perempuan",
+    )
+  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    _profileCondition();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
-    Widget name() => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Text(
-                "NAMA",
-                style: ThemeText.heading2,
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: nameController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "Nama Lengkap",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-            )
-          ],
-        );
-
-    Widget email() => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Text(
-                "EMAIL",
-                style: ThemeText.heading2,
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: emailController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "Masukan Alamat Email",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 14, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-            )
-          ],
-        );
 
     Widget phoneNum() => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,37 +115,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(
               height: 5,
             ),
-            TextField(
-              controller: phoneNumController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  prefixIcon: Container(
-                    margin: const EdgeInsets.only(right: 5),
-                    width: 40,
-                    height: 25,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                                color: ColorManager.blackprimaryColor))),
-                    child: Center(
-                      child: Text(
-                        "+62",
-                        style: ThemeText.heading3,
+            SizedBox(
+              height: height * 0.055,
+              child: TextField(
+                controller: phoneNumController,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                    prefixIcon: Container(
+                      margin: const EdgeInsets.only(right: 5),
+                      width: 40,
+                      height: 25,
+                      decoration: BoxDecoration(
+                          border: Border(
+                              right: BorderSide(
+                                  color: ColorManager.blackprimaryColor))),
+                      child: Center(
+                        child: Text(
+                          "+62",
+                          style: ThemeText.heading3,
+                        ),
                       ),
                     ),
-                  ),
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "Masukan Nomor Telepon",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 14, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
+                    isDense: true,
+                    isCollapsed: true,
+                    hintText: "Masukan Nomor Telepon",
+                    hintStyle: ThemeText.heading3,
+                    contentPadding: const EdgeInsets.fromLTRB(10, 9, 5, 0),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    )),
+              ),
             )
           ],
         );
@@ -157,122 +166,67 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(
               height: 5,
             ),
-            TextField(
-              controller: genderController,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "Pilih Jenis Kelamin",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 14, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-            )
+            SizedBox(
+              height: height * 0.055,
+              child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(10, 10, 5, 10),
+                      isDense: true,
+                      isCollapsed: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      )),
+                  items: items,
+                  value: genderValue,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      genderValue = newValue!;
+                    });
+                  }),
+            ),
           ],
         );
 
-    Widget tanggalLahir() => Column(
+    Widget tglLahir() => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 3),
               child: Text(
-                "Tanggal Lahir",
+                "TANGGAL LAHIR",
                 style: ThemeText.heading2,
               ),
             ),
             const SizedBox(
               height: 5,
             ),
-            TextField(
-              controller: bornDateController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "DD/MM/YYYY",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 14, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-            )
-          ],
-        );
-
-    Widget bpjs() => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Text(
-                "NOMOR BPJS",
-                style: ThemeText.heading2,
+            SizedBox(
+              height: height * 0.055,
+              child: TextField(
+                readOnly: true,
+                controller: bornDateController,
+                decoration: InputDecoration(
+                    isDense: true,
+                    isCollapsed: true,
+                    suffixIcon: GestureDetector(
+                      onTap: () => selectDate(context),
+                      child: Icon(
+                        Icons.calendar_month,
+                        color: ColorManager.secondaryColor,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    )),
               ),
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: bpjsNumController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "Masukan Nomor BPJS",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 14, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-            )
-          ],
-        );
-
-    Widget Alamat() => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Text(
-                "ALAMAT",
-                style: ThemeText.heading2,
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: addressController,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintText: "Masukan Alamat Lengkap",
-                  hintStyle: ThemeText.heading3,
-                  contentPadding: const EdgeInsets.fromLTRB(10, 14, 5, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-            )
           ],
         );
 
@@ -301,6 +255,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
         actions: [
           GestureDetector(
             onTap: () {
+              BlocProvider.of<SignInBloc>(context).add(UpdateUser(
+                  user: UserModel(
+                      email: emailController.text,
+                      name: nameController.text,
+                      alamat: addressController.text,
+                      jenis_kelamin: genderValue,
+                      no_bpjs: bpjsNumController.text,
+                      tgl_lahir: bornDateController.text,
+                      phone_num: phoneNumController.text)));
               Navigator.pushNamedAndRemoveUntil(
                   context, Routes.mainPageRoute, (route) => false);
             },
@@ -331,9 +294,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
               height: height * 0.03,
             ),
             TextFieldEditWidget(
-                title: "NAMA",
-                hintText: "Nama Lengkap",
-                controller: nameController),
+              title: "NAMA",
+              hintText: "Nama Lengkap",
+              controller: nameController,
+            ),
             SizedBox(
               height: height * 0.02,
             ),
@@ -348,17 +312,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             SizedBox(
               height: height * 0.02,
             ),
-            TextFieldEditWidget(
-                title: "JENIS KELAMIN",
-                hintText: "Pilih Jenis Kelamin",
-                controller: genderController),
+            jenisKelamin(),
             SizedBox(
               height: height * 0.02,
             ),
-            TextFieldNumEditWidget(
-                title: "TANGGAL LAHIR",
-                hintText: "DD/MM/YYYY",
-                controller: bornDateController),
+            tglLahir(),
             SizedBox(
               height: height * 0.02,
             ),

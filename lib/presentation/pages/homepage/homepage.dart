@@ -3,6 +3,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:input_history_text_field/input_history_text_field.dart';
 import 'package:puskesmas_guntur/presentation/bloc/article-Bloc/article_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/carousel-Bloc/carousel_bloc.dart';
+import 'package:puskesmas_guntur/presentation/bloc/hospital-Bloc/hospital_bloc.dart';
 import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
+import 'package:puskesmas_guntur/presentation/pages/hospital/hospital_page.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
@@ -18,6 +21,8 @@ import 'package:puskesmas_guntur/presentation/widget/at_article-Page/article_car
 import 'package:puskesmas_guntur/presentation/widget/at_home-Page/customButtonNav.dart';
 import 'package:puskesmas_guntur/presentation/widget/at_home-Page/customPelayanan.dart';
 import 'package:puskesmas_guntur/presentation/widget/at_home-Page/navBar.dart';
+import 'package:puskesmas_guntur/presentation/widget/at_hospital-Page/custom_hospital_card_widget.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -28,17 +33,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-  ScrollController controller = ScrollController(initialScrollOffset: 0);
-  double scrollController = 0.0;
+  // ScrollController controller = ScrollController(initialScrollOffset: 0);
+  AutoScrollController controller = AutoScrollController();
+  // double scrollController = 0.0;
   bool search = false;
   bool tap = false;
   var index = 0;
-
-  // _tapFunction() {
-  //   setState(() {
-  //     tap = !tap;
-  //   });
-  // }
 
   _searchFunction() {
     setState(() {
@@ -48,52 +48,20 @@ class _HomePageState extends State<HomePage> {
     print(tap);
   }
 
-  _listener() {
-    final aboutScroll = controller.position.minScrollExtent;
-    final pelayananScroll = controller.position.maxScrollExtent * 0.25;
-    final artikelScroll = controller.position.maxScrollExtent * 0.4;
-    final pengaduanScroll = controller.position.maxScrollExtent * 0.65;
-    final kontakScroll = controller.position.maxScrollExtent;
-
-    if (controller.offset == aboutScroll &&
-        controller.offset < pelayananScroll) {
-      setState(() {
-        index = 0;
-      });
-    }
-    if (controller.offset > pelayananScroll &&
-            controller.offset < artikelScroll ||
-        controller.offset == pelayananScroll) {
-      setState(() {
-        index = 1;
-      });
-    }
-    if (controller.offset > artikelScroll &&
-            controller.offset < pengaduanScroll ||
-        controller.offset == artikelScroll) {
-      setState(() {
-        index = 2;
-      });
-    }
-    if (controller.offset > pengaduanScroll &&
-            controller.offset < kontakScroll ||
-        controller.offset == pengaduanScroll) {
-      setState(() {
-        index = 3;
-      });
-    }
-    if (controller.offset == kontakScroll) {
-      setState(() {
-        index = 4;
-      });
-    }
-  }
-
   @override
   void initState() {
     _searchFunction();
+
+    // controller.addListener(_listener());
+
+    // controller.addListener(_listener);
+    controller = AutoScrollController(
+      viewportBoundaryGetter: () =>
+          Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+      axis: Axis.vertical,
+    );
     // _tapFunction();
-    controller.addListener(_listener);
+
     super.initState();
   }
 
@@ -101,8 +69,8 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    controller.removeListener(_listener);
-    controller.dispose();
+    // controller.removeListener(_listener);
+    // controller.dispose();
   }
 
   @override
@@ -211,6 +179,57 @@ class _HomePageState extends State<HomePage> {
           ],
         );
 
+    Widget Hospital() => Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Rujukan",
+                  style: ThemeText.heading2,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.hospitalRoute);
+                  },
+                  child: Text(
+                    "Lebih Banyak",
+                    style: ThemeText.heading3
+                        .copyWith(color: ColorManager.secondaryColor),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            SizedBox(
+              height: height * 0.5,
+              child: BlocBuilder<HospitalBloc, HospitalState>(
+                builder: (context, state) {
+                  if (state is HospitalLoaded) {
+                    var items = state.okContentHospital!.hospital;
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: 2,
+                      itemBuilder: ((context, index) {
+                        return CustomHospitalCardWidget(
+                            press: () {},
+                            imageUrl: items![index].imageUrl.toString(),
+                            title: items[index].title.toString(),
+                            location: items[index].address.toString(),
+                            number: items[index].noTelp.toString());
+                      }),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
     Widget Artikel() => Column(
           children: [
             Row(
@@ -521,6 +540,15 @@ class _HomePageState extends State<HomePage> {
               )),
         );
 
+    List content = [
+      TentangKami(),
+      Pelayanan(),
+      Hospital(),
+      Artikel(),
+      pengaduan(),
+      kontak(),
+    ];
+
     return Scaffold(
       backgroundColor: ColorManager.whiteTextColor,
       key: _key,
@@ -639,10 +667,14 @@ class _HomePageState extends State<HomePage> {
                                   ? ColorManager.whiteTextColor
                                   : ColorManager.blackprimaryColor,
                               press: () {
-                                controller.animateTo(
-                                    controller.position.minScrollExtent,
-                                    duration: const Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn);
+                                setState(() {
+                                  index = 0;
+                                });
+                                controller.scrollToIndex(
+                                  0,
+                                  duration: const Duration(seconds: 1),
+                                  preferPosition: AutoScrollPosition.begin,
+                                );
                               },
                               backgroundColor: (index == 0)
                                   ? ColorManager.primaryColor
@@ -658,34 +690,13 @@ class _HomePageState extends State<HomePage> {
                                   ? ColorManager.whiteTextColor
                                   : ColorManager.blackprimaryColor,
                               press: () {
-                                (index == 1)
-                                    ? () {}
-                                    : (index == 2)
-                                        ? controller.animateTo(
-                                            controller.position.maxScrollExtent *
-                                                0.25,
-                                            duration:
-                                                const Duration(seconds: 1),
-                                            curve: Curves.fastOutSlowIn)
-                                        : (index == 3)
-                                            ? controller.animateTo(
-                                                controller.position.maxScrollExtent *
-                                                    0.29,
-                                                duration:
-                                                    const Duration(seconds: 1),
-                                                curve: Curves.fastOutSlowIn)
-                                            : (index == 4)
-                                                ? controller.animateTo(
-                                                    controller.position
-                                                            .maxScrollExtent *
-                                                        0.3,
-                                                    duration: const Duration(
-                                                        seconds: 1),
-                                                    curve: Curves.fastOutSlowIn)
-                                                : controller.animateTo(
-                                                    controller.position.maxScrollExtent * 0.32,
-                                                    duration: const Duration(seconds: 1),
-                                                    curve: Curves.fastOutSlowIn);
+                                setState(() {
+                                  index = 1;
+                                });
+                                print(index);
+                                controller.scrollToIndex(1,
+                                    duration: const Duration(seconds: 1),
+                                    preferPosition: AutoScrollPosition.begin);
                               },
                               backgroundColor: (index == 1)
                                   ? ColorManager.primaryColor
@@ -695,83 +706,40 @@ class _HomePageState extends State<HomePage> {
                             width: width * 0.03,
                           ),
                           CustomButtonNav(
-                            imageUrl: "assets/images/icon_artikel.png",
-                            title: "Artikel",
-                            color: (index == 2)
-                                ? ColorManager.whiteTextColor
-                                : ColorManager.blackTextColor,
-                            press: () {
-                              (index == 2)
-                                  ? () {}
-                                  : (index == 1)
-                                      ? controller.animateTo(
-                                          controller.position.maxScrollExtent *
-                                              0.46,
-                                          duration: const Duration(seconds: 1),
-                                          curve: Curves.fastOutSlowIn)
-                                      : (index == 3)
-                                          ? controller.animateTo(
-                                              controller.position
-                                                      .maxScrollExtent *
-                                                  0.49,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                              curve: Curves.fastOutSlowIn)
-                                          : (index == 4)
-                                              ? controller.animateTo(
-                                                  controller.position
-                                                          .maxScrollExtent *
-                                                      0.49,
-                                                  duration: const Duration(
-                                                      seconds: 1),
-                                                  curve: Curves.fastOutSlowIn)
-                                              : controller.animateTo(
-                                                  controller.position.maxScrollExtent * 0.52,
-                                                  duration: const Duration(seconds: 1),
-                                                  curve: Curves.fastOutSlowIn);
-                            },
-                            backgroundColor: (index == 2)
-                                ? ColorManager.primaryColor
-                                : ColorManager.secondaryColor.withOpacity(0.2),
-                          ),
+                              press: () {
+                                setState(() {
+                                  index = 2;
+                                });
+                                controller.scrollToIndex(
+                                  2,
+                                  duration: const Duration(seconds: 1),
+                                );
+                              },
+                              imageUrl: "assets/images/icon_hospital.png",
+                              title: "RS Rujukan",
+                              color: (index == 2)
+                                  ? ColorManager.whiteTextColor
+                                  : ColorManager.blackTextColor,
+                              backgroundColor: (index == 2)
+                                  ? ColorManager.primaryColor
+                                  : ColorManager.secondaryColor
+                                      .withOpacity(0.2)),
                           SizedBox(
                             width: width * 0.03,
                           ),
                           CustomButtonNav(
-                            imageUrl: "assets/images/icon_pengaduan.png",
-                            title: "Pengaduan",
+                            imageUrl: "assets/images/icon_artikel.png",
+                            title: "Artikel",
                             color: (index == 3)
                                 ? ColorManager.whiteTextColor
-                                : ColorManager.blackprimaryColor,
+                                : ColorManager.blackTextColor,
                             press: () {
-                              (index == 3)
-                                  ? () {}
-                                  : (index == 1)
-                                      ? controller.animateTo(
-                                          controller.position.maxScrollExtent *
-                                              0.75,
-                                          duration: const Duration(seconds: 1),
-                                          curve: Curves.fastOutSlowIn)
-                                      : (index == 2)
-                                          ? controller.animateTo(
-                                              controller.position
-                                                      .maxScrollExtent *
-                                                  0.68,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                              curve: Curves.fastOutSlowIn)
-                                          : (index == 4)
-                                              ? controller.animateTo(
-                                                  controller.position
-                                                          .maxScrollExtent *
-                                                      0.80,
-                                                  duration: const Duration(
-                                                      seconds: 1),
-                                                  curve: Curves.fastOutSlowIn)
-                                              : controller.animateTo(
-                                                  controller.position.maxScrollExtent * 0.85,
-                                                  duration: const Duration(seconds: 1),
-                                                  curve: Curves.fastOutSlowIn);
+                              setState(() {
+                                index = 3;
+                              });
+                              controller.scrollToIndex(3,
+                                  duration: const Duration(seconds: 1),
+                                  preferPosition: AutoScrollPosition.begin);
                             },
                             backgroundColor: (index == 3)
                                 ? ColorManager.primaryColor
@@ -781,20 +749,41 @@ class _HomePageState extends State<HomePage> {
                             width: width * 0.03,
                           ),
                           CustomButtonNav(
-                            imageUrl: "assets/icons/icon_contacts.png",
-                            title: "Kontak",
+                            imageUrl: "assets/images/icon_pengaduan.png",
+                            title: "Pengaduan",
                             color: (index == 4)
                                 ? ColorManager.whiteTextColor
                                 : ColorManager.blackprimaryColor,
                             press: () {
-                              (index == 4)
-                                  ? () {}
-                                  : controller.animateTo(
-                                      controller.position.maxScrollExtent * 1.3,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.fastOutSlowIn);
+                              setState(() {
+                                index = 4;
+                              });
+                              controller.scrollToIndex(4,
+                                  duration: const Duration(seconds: 1),
+                                  preferPosition: AutoScrollPosition.begin);
                             },
                             backgroundColor: (index == 4)
+                                ? ColorManager.primaryColor
+                                : ColorManager.secondaryColor.withOpacity(0.2),
+                          ),
+                          SizedBox(
+                            width: width * 0.03,
+                          ),
+                          CustomButtonNav(
+                            imageUrl: "assets/icons/icon_contacts.png",
+                            title: "Kontak",
+                            color: (index == 5)
+                                ? ColorManager.whiteTextColor
+                                : ColorManager.blackprimaryColor,
+                            press: () {
+                              setState(() {
+                                index = 5;
+                              });
+                              controller.scrollToIndex(5,
+                                  duration: const Duration(seconds: 1),
+                                  preferPosition: AutoScrollPosition.begin);
+                            },
+                            backgroundColor: (index == 5)
                                 ? ColorManager.primaryColor
                                 : ColorManager.secondaryColor.withOpacity(0.2),
                           )
@@ -805,36 +794,21 @@ class _HomePageState extends State<HomePage> {
                       height: height * 0.02,
                     ),
                     SizedBox(
-                      height: height * 0.5,
-                      child: NotificationListener(
-                        child: ListView(
-                          controller: controller,
-                          physics: const BouncingScrollPhysics(),
-                          children: [
-                            TentangKami(),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            Pelayanan(),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            Artikel(),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            pengaduan(),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                            kontak(),
-                            SizedBox(
-                              height: height * 0.04,
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+                        height: height * 0.5,
+                        child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: controller,
+                            itemCount: content.length,
+                            itemBuilder: ((context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: AutoScrollTag(
+                                    key: ValueKey(index),
+                                    controller: controller,
+                                    child: content[index],
+                                    index: index),
+                              );
+                            }))),
                   ],
                 ),
               )

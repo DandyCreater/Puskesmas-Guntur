@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "688111108525",
+    "project_id": "puskesmasguntur",
+    "storage_bucket": "puskesmasguntur.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688111108525:android:873b25a5bf669587d82124",
+        "android_client_info": {
+          "package_name": "com.example.puskesmas_guntur"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688111108525-ed9b8gsqkdv4t7c3p6bauoks7vj0rqns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.puskesmas_guntur",
+            "certificate_hash": "8562608da03be75f970bc9267d815de56601a2d8"
+          }
+        },
+        {
+          "client_id": "688111108525-6otscugqo53g3iqc61lg0gab5mk05k4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuMsS664rWMxE5yAnmGM4nDlhoFsPzM6c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "688111108525-6otscugqo53g3iqc61lg0gab5mk05k4d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
