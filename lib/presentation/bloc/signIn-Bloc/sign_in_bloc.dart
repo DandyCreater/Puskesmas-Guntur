@@ -48,5 +48,17 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         emit(const SignInFailed("Login Google Error"));
       }
     });
+
+    on<FetchSignInFacebook>((event, emit) async {
+      emit(SignInLoading());
+
+      try {
+        var user = await AuthService().singUpWithFacebook();
+        emit(SignInSuccess(user: user));
+      } catch (e) {
+        print(e);
+        emit(const SignInFailed("Login Facebook Error"));
+      }
+    });
   }
 }

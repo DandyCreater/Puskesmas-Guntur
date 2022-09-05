@@ -1,7 +1,10 @@
+// ignore_for_file: unnecessary_null_comparison, prefer_if_null_operators
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:hive/hive.dart';
 
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
@@ -16,6 +19,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   double _animatedWidth = 10.0;
+  late bool loggedIn;
 
   loading() {
     setState(() {
@@ -23,14 +27,30 @@ class _SplashPageState extends State<SplashPage> {
     });
   }
 
+  initStatus() {
+    var data = Hive.box("User");
+
+    data == null ? "" : data == data;
+    loggedIn =
+        data.get("loginSession") == null ? false : data.get("loginSession");
+    print("log IN" + loggedIn.toString());
+    if (loggedIn == true) {
+      Future.delayed(const Duration(seconds: 10))
+          .then((value) => Navigator.pushNamed(context, Routes.mainPageRoute));
+    } else {
+      Future.delayed(const Duration(seconds: 10))
+          .then((value) => Navigator.pushNamed(context, Routes.signInRoute));
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           loading();
+          initStatus();
         }));
-    Future.delayed(const Duration(seconds: 10))
-        .then((value) => Navigator.pushNamed(context, Routes.signInRoute));
+
     super.initState();
   }
 

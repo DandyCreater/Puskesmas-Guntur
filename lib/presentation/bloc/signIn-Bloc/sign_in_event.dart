@@ -33,3 +33,9 @@ class FetchSignInGoogle extends SignInEvent {
   // TODO: implement props
   List<Object> get props => super.props;
 }
+
+class FetchSignInFacebook extends SignInEvent {
+  @override
+  // TODO: implement props
+  List<Object> get props => super.props;
+}

@@ -12,6 +12,7 @@ import 'package:puskesmas_guntur/presentation/pages/pengaduan/pengaduan-page.dar
 import 'package:puskesmas_guntur/presentation/pages/profile/edit_profile.dart';
 import 'package:puskesmas_guntur/presentation/pages/profile/profile_page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-in/forgotpassword-page.dart';
+import 'package:puskesmas_guntur/presentation/pages/sign-in/resetpassword-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-in/signin-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/sign-up/signup-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/splashpage/splashpage.dart';
@@ -35,6 +36,7 @@ class Routes {
   static const String infoAppsRoute = '/info';
   static const String hospitalRoute = '/hospital';
   static const String forgotPasswordRoute = '/forgot';
+  static const String resetPasswordRoute = '/reset';
 }
 
 class RouteGenerator {
@@ -105,6 +107,12 @@ class RouteGenerator {
       case Routes.forgotPasswordRoute:
         return PageTransition(
           child: const ForgotPassword(),
+          type: PageTransitionType.fade,
+          duration: const Duration(seconds: 1),
+        );
+      case Routes.resetPasswordRoute:
+        return PageTransition(
+          child: const ResetPasswordPage(),
           type: PageTransitionType.fade,
           duration: const Duration(seconds: 1),
         );

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/forgotpassword-Bloc/forgotpassword_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
+import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -15,6 +16,46 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController emailController = TextEditingController();
+
+  _showAlertDialog(BuildContext context, String message) {
+    Widget acceptButton = TextButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: Text("OK", style: ThemeText.heading3),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Center(
+        child: Text("Reset Password Gagal", style: ThemeText.heading2),
+      ),
+      content: Text(message, style: ThemeText.heading3),
+      actions: [
+        acceptButton,
+      ],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
+  }
+
+  _condition() {
+    if (emailController.text.isEmpty) {
+      _showAlertDialog(context, "Alamat Email tidak boleh kosong!");
+    } else if (emailController.text.length < 6) {
+      _showAlertDialog(context, "Harap Masukan dengan format email yang benar");
+      emailController.text = "";
+    } else {
+      BlocProvider.of<ForgotpasswordBloc>(context)
+          .add(FetchForgotPassword(email: emailController.text));
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.resetPasswordRoute, (route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,9 +120,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         backgroundColor: MaterialStateProperty.all(
                             ColorManager.secondaryColor)),
                     onPressed: () {
-                      BlocProvider.of<ForgotpasswordBloc>(context).add(
-                          FetchForgotPassword(email: emailController.text));
-                      const CircularProgressIndicator();
+                      _condition();
                     },
                     child: Text(
                       "Reset Password",

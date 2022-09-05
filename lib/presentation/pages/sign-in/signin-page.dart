@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, prefer_if_null_operators
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -25,9 +27,12 @@ class _SignInPageState extends State<SignInPage> {
 
   initStatus() {
     var data = Hive.box("User");
-    emailController.text = data.get("email");
-    passwordController.text = data.get("password");
-    isChecked = data.get("check");
+    data == null ? "" : data == data;
+    emailController.text = data.get("email") == null ? "" : data.get("email");
+    passwordController.text =
+        data.get("password") == null ? "" : data.get("password");
+
+    isChecked = data.get("check") == null ? false : data.get("check");
     (isChecked == null) ? isChecked = false : isChecked = true;
 
     print(emailController.text);
@@ -41,7 +46,7 @@ class _SignInPageState extends State<SignInPage> {
 
   _checked() async {
     isChecked = !isChecked;
-    print(isChecked);
+    print("Checked" + isChecked.toString());
     setState(() {});
   }
 
@@ -51,6 +56,16 @@ class _SignInPageState extends State<SignInPage> {
     isChecked ? data.put("check", checked) : data.delete("check");
     isChecked ? data.put("email", email) : data.delete("email");
     isChecked ? data.put("password", password) : data.delete("password");
+  }
+
+  inputSession() {
+    var data = Hive.box("User");
+    bool loginSession = true;
+
+    data.put("loginSession", loginSession);
+    Future.delayed(const Duration(seconds: 2)).then((value) =>
+        Navigator.pushNamedAndRemoveUntil(
+            context, Routes.mainPageRoute, (route) => false));
   }
 
   _showAlertDialog(BuildContext context, String message) {
@@ -193,9 +208,7 @@ class _SignInPageState extends State<SignInPage> {
             );
           } else if (state is SignInSuccess) {
             print("Sign In Success: $state");
-            Future.delayed(const Duration(seconds: 2)).then((value) =>
-                Navigator.pushNamedAndRemoveUntil(
-                    context, Routes.mainPageRoute, (route) => false));
+            inputSession();
           } else if (state is SignInFailed) {
             print("Sign In Failed : $state");
             _showAlertDialog(context, "Email / Password Salah");
@@ -394,7 +407,10 @@ class _SignInPageState extends State<SignInPage> {
                     CustomSosMedSignIn(
                       imageUrl: "assets/icons/facebook_icon.png",
                       title: "Facebook",
-                      press: () {},
+                      press: () {
+                        BlocProvider.of<SignInBloc>(context)
+                            .add(FetchSignInFacebook());
+                      },
                     ),
                     CustomSosMedSignIn(
                       imageUrl: "assets/icons/google_icon.png",

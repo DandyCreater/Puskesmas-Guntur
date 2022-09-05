@@ -415,7 +415,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     CustomSosMedSignUp(
                       imageUrl: "assets/icons/facebook_icon.png",
                       title: "Facebook",
-                      press: () {},
+                      press: () {
+                        BlocProvider.of<SignInBloc>(context)
+                            .add(FetchSignInFacebook());
+                      },
                     ),
                     CustomSosMedSignUp(
                       imageUrl: "assets/icons/google_icon.png",
