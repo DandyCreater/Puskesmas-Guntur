@@ -2,26 +2,40 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:puskesmas_guntur/data/model/user/user_model.dart';
 import 'package:puskesmas_guntur/data/service/auth-service.dart';
 import 'package:puskesmas_guntur/data/service/user-service.dart';
+import 'package:puskesmas_guntur/domain/entity/user/user_entity.dart';
 import 'package:puskesmas_guntur/domain/helper/login-helper.dart';
-import 'package:puskesmas_guntur/domain/model/user-model/user_model.dart';
+import 'package:puskesmas_guntur/domain/usecase/auth/signIn_usecase.dart';
 
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  SignInBloc() : super(SignInInitial()) {
+  final SignInUseCase signInUseCase;
+  final FacebookSignInUseCase facebookSignInUseCase;
+  final GoogleSignInUseCase googleSignInUseCase;
+  final UpdateUserUseCase updateUserUseCase;
+  SignInBloc(this.signInUseCase, this.facebookSignInUseCase,
+      this.googleSignInUseCase, this.updateUserUseCase)
+      : super(SignInInitial()) {
     on<FetchSignIn>((event, emit) async {
       emit(SignInLoading());
 
       try {
-        var user = await AuthService().signIn(
-            email: event.email.toString(), password: event.password.toString());
-        emit(SignInSuccess(user: user));
+        final response =
+            await signInUseCase.execute(event.email!, event.password!);
+        response.fold((failure) {
+          emit(SignInFailed(failure.message));
+        }, (result) {
+          emit(SignInDispose());
+          emit(SignInSuccess(user: result));
+        });
       } catch (e) {
-        emit(const SignInFailed("Sign In Error"));
+        emit(SignInFailed("BLOC Sign In Error $e"));
       }
     });
 
@@ -29,11 +43,15 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       emit(SignInLoading());
 
       try {
-        var userUpdate = await AuthService().updateUser(user: event.user!);
-        emit(SignInSuccess(user: userUpdate));
+        final response = await updateUserUseCase.execute(event.user!);
+        response.fold((failure) {
+          emit(SignInFailed(failure.message));
+        }, (result) {
+          emit(SignInDispose());
+          emit(SignInSuccess(user: result));
+        });
       } catch (e) {
-        print(e);
-        emit(const SignInFailed("Update Error"));
+        emit(SignInFailed("BLOC Update Error $e"));
       }
     });
 
@@ -41,11 +59,15 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       emit(SignInLoading());
 
       try {
-        var user = await AuthService().signUpWithGoogle();
-        emit(SignInSuccess(user: user));
+        final response = await googleSignInUseCase.execute();
+        response.fold((failure) {
+          emit(SignInFailed(failure.message));
+        }, (result) {
+          emit(SignInDispose());
+          emit(SignInSuccess(user: result));
+        });
       } catch (e) {
-        print(e);
-        emit(const SignInFailed("Login Google Error"));
+        emit(SignInFailed("BLOC Login Google Error $e"));
       }
     });
 
@@ -53,11 +75,15 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       emit(SignInLoading());
 
       try {
-        var user = await AuthService().singUpWithFacebook();
-        emit(SignInSuccess(user: user));
+        final response = await facebookSignInUseCase.execute();
+        response.fold((failure) {
+          emit(SignInFailed(failure.message));
+        }, (result) {
+          emit(SignInDispose());
+          emit(SignInSuccess(user: result));
+        });
       } catch (e) {
-        print(e);
-        emit(const SignInFailed("Login Facebook Error"));
+        emit(SignInFailed("BLOC Login Facebook Error $e"));
       }
     });
   }

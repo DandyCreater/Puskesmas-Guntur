@@ -1,3 +1,7 @@
+// ignore_for_file: unnecessary_this
+
+import 'package:puskesmas_guntur/domain/entity/carousel/carousel_entity.dart';
+
 class CarouselModel {
   String? responseStatus;
   OKContentCarousel? oKContentCarousel;
@@ -23,6 +27,15 @@ class CarouselModel {
     data['failContent'] = this.failContent;
     return data;
   }
+
+  CarouselEntity toEntity() {
+    return CarouselEntity(
+        responseStatus: this.responseStatus,
+        oKContentCarousel: this.oKContentCarousel != null
+            ? this.oKContentCarousel!.toEntity()
+            : null,
+        failContent: this.failContent);
+  }
 }
 
 class OKContentCarousel {
@@ -46,6 +59,13 @@ class OKContentCarousel {
     }
     return data;
   }
+
+  OKContentCarouselEntity toEntity() {
+    return OKContentCarouselEntity(
+        carousel: this.carousel != null
+            ? this.carousel!.map((e) => e.toEntity()).toList()
+            : null);
+  }
 }
 
 class Carousel {
@@ -64,5 +84,9 @@ class Carousel {
     data['imageUrl'] = this.imageUrl;
     data['title'] = this.title;
     return data;
+  }
+
+  CarouselListEntity toEntity() {
+    return CarouselListEntity(imageUrl: this.imageUrl, title: this.title);
   }
 }

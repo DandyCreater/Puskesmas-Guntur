@@ -11,6 +11,7 @@ import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
 import 'package:puskesmas_guntur/presentation/widget/at_signIn-Page/customSosMedSignIn.dart';
+import 'package:lottie/lottie.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -201,17 +202,20 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       body: BlocListener<SignInBloc, SignInState>(
         listener: (context, state) {
-          if (state is SignInLoading) {
-            print("Sign In : $state");
-            const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (state is SignInDispose) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SizedBox(
+                      height: height,
+                      width: width,
+                      child: Lottie.asset('assets/lottie/loading.json'));
+                });
+            Future.delayed(const Duration(seconds: 2));
           } else if (state is SignInSuccess) {
-            print("Sign In Success: $state");
             inputSession();
           } else if (state is SignInFailed) {
-            print("Sign In Failed : $state");
-            _showAlertDialog(context, "Email / Password Salah");
+            _showAlertDialog(context, state.message!);
             emailController.text = "";
             passwordController.text = "";
           }

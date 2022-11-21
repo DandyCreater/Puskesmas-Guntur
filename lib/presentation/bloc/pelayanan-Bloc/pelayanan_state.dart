@@ -12,7 +12,7 @@ class PelayananInitial extends PelayananState {}
 class PelayananLoading extends PelayananState {}
 
 class PelayananLoaded extends PelayananState {
-  final OkContentPelayan? okContentPelayanan;
+  final OkContentPelayanEntity? okContentPelayanan;
 
   const PelayananLoaded({required this.okContentPelayanan});
 

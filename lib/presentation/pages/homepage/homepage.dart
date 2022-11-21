@@ -12,6 +12,7 @@ import 'package:input_history_text_field/input_history_text_field.dart';
 import 'package:puskesmas_guntur/presentation/bloc/article-Bloc/article_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/carousel-Bloc/carousel_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/hospital-Bloc/hospital_bloc.dart';
+import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/pages/article/detail-article-page.dart';
 import 'package:puskesmas_guntur/presentation/pages/hospital/hospital_page.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
@@ -23,6 +24,7 @@ import 'package:puskesmas_guntur/presentation/widget/at_home-Page/customPelayana
 import 'package:puskesmas_guntur/presentation/widget/at_home-Page/navBar.dart';
 import 'package:puskesmas_guntur/presentation/widget/at_hospital-Page/custom_hospital_card_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -33,12 +35,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-  // ScrollController controller = ScrollController(initialScrollOffset: 0);
-  AutoScrollController controller = AutoScrollController();
-  // double scrollController = 0.0;
+  final ItemScrollController controller = ItemScrollController();
+  ItemPositionsListener positionsController = ItemPositionsListener.create();
   bool search = false;
   bool tap = false;
   var index = 0;
+  var listLength = 0;
 
   _searchFunction() {
     setState(() {
@@ -48,20 +50,14 @@ class _HomePageState extends State<HomePage> {
     print(tap);
   }
 
+  scrollFunction() async {
+    print(controller);
+  }
+
   @override
   void initState() {
+    scrollFunction();
     _searchFunction();
-
-    // controller.addListener(_listener());
-
-    // controller.addListener(_listener);
-    controller = AutoScrollController(
-      viewportBoundaryGetter: () =>
-          Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
-      axis: Axis.vertical,
-    );
-    // _tapFunction();
-
     super.initState();
   }
 
@@ -69,8 +65,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    // controller.removeListener(_listener);
-    // controller.dispose();
   }
 
   @override
@@ -210,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                   if (state is HospitalLoaded) {
                     var items = state.okContentHospital!.hospital;
                     return ListView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: 2,
                       itemBuilder: ((context, index) {
                         return CustomHospitalCardWidget(
@@ -549,6 +543,198 @@ class _HomePageState extends State<HomePage> {
       kontak(),
     ];
 
+    Widget positionsView() => ValueListenableBuilder<Iterable<ItemPosition>>(
+        valueListenable: positionsController.itemPositions,
+        builder: (context, positions, child) {
+          int? min;
+          int? max;
+          if (positions.isNotEmpty) {
+            min = positions
+                .where((ItemPosition position) => position.itemTrailingEdge > 0)
+                .reduce((ItemPosition min, ItemPosition position) =>
+                    position.itemTrailingEdge < min.itemTrailingEdge
+                        ? position
+                        : min)
+                .index;
+            max = positions
+                .where((ItemPosition position) => position.itemLeadingEdge < 1)
+                .reduce((ItemPosition max, ItemPosition position) =>
+                    position.itemLeadingEdge > max.itemLeadingEdge
+                        ? position
+                        : max)
+                .index;
+          }
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  CustomButtonNav(
+                      imageUrl: "assets/images/icon_about.png",
+                      title: "Tentang\nKami",
+                      color:
+                          // (index == 0)
+                          (min == 0)
+                              ? ColorManager.whiteTextColor
+                              : ColorManager.blackprimaryColor,
+                      press: () {
+                        setState(() {
+                          index = 0;
+                        });
+                        controller.scrollTo(
+                          duration: const Duration(seconds: 1),
+                          // preferPosition: AutoScrollPosition.begin,
+                          index: 0,
+                        );
+                      },
+                      backgroundColor:
+                          // (index == 0)
+                          (min == 0)
+                              ? ColorManager.primaryColor
+                              : ColorManager.secondaryColor.withOpacity(0.2)),
+                  SizedBox(
+                    width: width * 0.03,
+                  ),
+                  CustomButtonNav(
+                      imageUrl: "assets/images/icon_service.png",
+                      title: "Pelayanan",
+                      color:
+                          // (index == 1)
+                          (min == 1)
+                              ? ColorManager.whiteTextColor
+                              : ColorManager.blackprimaryColor,
+                      press: () {
+                        setState(() {
+                          index = 1;
+                        });
+                        controller.scrollTo(
+                          index: 1,
+                          duration: const Duration(seconds: 1),
+                          // preferPosition: AutoScrollPosition.begin
+                        );
+                      },
+                      backgroundColor:
+                          // (index == 1)
+                          (min == 1)
+                              ? ColorManager.primaryColor
+                              : ColorManager.secondaryColor.withOpacity(0.2)),
+                  SizedBox(
+                    width: width * 0.03,
+                  ),
+                  CustomButtonNav(
+                      press: () {
+                        setState(() {});
+                        controller.scrollTo(
+                          index: 2,
+                          duration: const Duration(seconds: 1),
+                        );
+                      },
+                      imageUrl: "assets/images/icon_hospital.png",
+                      title: "RS Rujukan",
+                      color:
+                          // (index == 2)
+                          (min == 2)
+                              ? ColorManager.whiteTextColor
+                              : ColorManager.blackTextColor,
+                      backgroundColor:
+                          // (index == 2)
+                          (min == 2)
+                              ? ColorManager.primaryColor
+                              : ColorManager.secondaryColor.withOpacity(0.2)),
+                  SizedBox(
+                    width: width * 0.03,
+                  ),
+                  CustomButtonNav(
+                    imageUrl: "assets/images/icon_artikel.png",
+                    title: "Artikel",
+                    color:
+                        // (index == 3)
+                        (min == 3)
+                            ? ColorManager.whiteTextColor
+                            : ColorManager.blackTextColor,
+                    press: () {
+                      setState(() {
+                        // index = 3;
+                        (min == 3);
+                      });
+                      controller.scrollTo(
+                        index: 3,
+                        duration: const Duration(seconds: 1),
+                        // preferPosition: AutoScrollPosition.begin
+                      );
+                    },
+                    backgroundColor:
+                        //  (index == 3)
+                        (min == 3)
+                            ? ColorManager.primaryColor
+                            : ColorManager.secondaryColor.withOpacity(0.2),
+                  ),
+                  SizedBox(
+                    width: width * 0.03,
+                  ),
+                  CustomButtonNav(
+                    imageUrl: "assets/images/icon_pengaduan.png",
+                    title: "Pengaduan",
+                    color:
+                        //  (index == 4)
+                        (min == 4)
+                            ? ColorManager.whiteTextColor
+                            : ColorManager.blackprimaryColor,
+                    press: () {
+                      setState(() {
+                        print(max);
+                        // index = 4;
+                      });
+                      controller.scrollTo(
+                        index: 4,
+                        duration: const Duration(seconds: 1),
+                        // preferPosition: AutoScrollPosition.begin
+                      );
+                    },
+                    backgroundColor:
+                        // (index == 4)
+                        (min == 4)
+                            ? ColorManager.primaryColor
+                            : ColorManager.secondaryColor.withOpacity(0.2),
+                  ),
+                  SizedBox(
+                    width: width * 0.03,
+                  ),
+                  CustomButtonNav(
+                    imageUrl: "assets/icons/icon_contacts.png",
+                    title: "Kontak",
+                    color:
+                        // (index == 5)
+                        // (max == 5)
+                        (min == 5)
+                            ? ColorManager.whiteTextColor
+                            : ColorManager.blackprimaryColor,
+                    press: () {
+                      setState(() {
+                        // max == 6;
+                        print(max);
+                        // index = 5;
+                      });
+                      controller.scrollTo(
+                        index: 5,
+                        duration: const Duration(seconds: 1),
+                        // preferPosition: AutoScrollPosition.begin
+                      );
+                    },
+                    backgroundColor: (
+                        // index == 5)
+                        // (max == 6)
+                        (min == 5)
+                            ? ColorManager.primaryColor
+                            : ColorManager.secondaryColor.withOpacity(0.2)),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
     return Scaffold(
       backgroundColor: ColorManager.whiteTextColor,
       key: _key,
@@ -558,17 +744,17 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: height * 0.1,
-                    ),
-                    (search)
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+              Column(
+                children: [
+                  SizedBox(
+                    height: height * 0.1,
+                  ),
+                  (search)
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
                                 GestureDetector(
                                   onTap: () {
                                     _key.currentState!.openDrawer();
@@ -593,10 +779,10 @@ class _HomePageState extends State<HomePage> {
                                       size: height * 0.06,
                                       color: ColorManager.secondaryColor),
                                 )
-                              ])
-                        : searchTextField(),
-                  ],
-                ),
+                              ]),
+                        )
+                      : searchTextField(),
+                ],
               ),
               const SizedBox(
                 height: 18,
@@ -606,7 +792,7 @@ class _HomePageState extends State<HomePage> {
                 child: BlocBuilder<CarouselBloc, CarouselState>(
                   builder: (context, state) {
                     if (state is CarouselLoaded) {
-                      var items = state.okContentCarousel.carousel;
+                      var items = state.okContentCarousel!.carousel;
                       return SizedBox(
                           height: height * 0.27,
                           width: width,
@@ -643,174 +829,48 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: height * 0.02,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
                       "MENU UTAMA",
                       style: ThemeText.heading2,
                     ),
-                    SizedBox(
-                      height: height * 0.03,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      child: Row(
-                        children: [
-                          CustomButtonNav(
-                              imageUrl: "assets/images/icon_about.png",
-                              title: "Tentang\nKami",
-                              color: (index == 0)
-                                  ? ColorManager.whiteTextColor
-                                  : ColorManager.blackprimaryColor,
-                              press: () {
-                                setState(() {
-                                  index = 0;
-                                });
-                                controller.scrollToIndex(
-                                  0,
-                                  duration: const Duration(seconds: 1),
-                                  preferPosition: AutoScrollPosition.begin,
-                                );
-                              },
-                              backgroundColor: (index == 0)
-                                  ? ColorManager.primaryColor
-                                  : ColorManager.secondaryColor
-                                      .withOpacity(0.2)),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
-                          CustomButtonNav(
-                              imageUrl: "assets/images/icon_service.png",
-                              title: "Pelayanan",
-                              color: (index == 1)
-                                  ? ColorManager.whiteTextColor
-                                  : ColorManager.blackprimaryColor,
-                              press: () {
-                                setState(() {
-                                  index = 1;
-                                });
-                                print(index);
-                                controller.scrollToIndex(1,
-                                    duration: const Duration(seconds: 1),
-                                    preferPosition: AutoScrollPosition.begin);
-                              },
-                              backgroundColor: (index == 1)
-                                  ? ColorManager.primaryColor
-                                  : ColorManager.secondaryColor
-                                      .withOpacity(0.2)),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
-                          CustomButtonNav(
-                              press: () {
-                                setState(() {
-                                  index = 2;
-                                });
-                                controller.scrollToIndex(
-                                  2,
-                                  duration: const Duration(seconds: 1),
-                                );
-                              },
-                              imageUrl: "assets/images/icon_hospital.png",
-                              title: "RS Rujukan",
-                              color: (index == 2)
-                                  ? ColorManager.whiteTextColor
-                                  : ColorManager.blackTextColor,
-                              backgroundColor: (index == 2)
-                                  ? ColorManager.primaryColor
-                                  : ColorManager.secondaryColor
-                                      .withOpacity(0.2)),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
-                          CustomButtonNav(
-                            imageUrl: "assets/images/icon_artikel.png",
-                            title: "Artikel",
-                            color: (index == 3)
-                                ? ColorManager.whiteTextColor
-                                : ColorManager.blackTextColor,
-                            press: () {
-                              setState(() {
-                                index = 3;
-                              });
-                              controller.scrollToIndex(3,
-                                  duration: const Duration(seconds: 1),
-                                  preferPosition: AutoScrollPosition.begin);
-                            },
-                            backgroundColor: (index == 3)
-                                ? ColorManager.primaryColor
-                                : ColorManager.secondaryColor.withOpacity(0.2),
-                          ),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
-                          CustomButtonNav(
-                            imageUrl: "assets/images/icon_pengaduan.png",
-                            title: "Pengaduan",
-                            color: (index == 4)
-                                ? ColorManager.whiteTextColor
-                                : ColorManager.blackprimaryColor,
-                            press: () {
-                              setState(() {
-                                index = 4;
-                              });
-                              controller.scrollToIndex(4,
-                                  duration: const Duration(seconds: 1),
-                                  preferPosition: AutoScrollPosition.begin);
-                            },
-                            backgroundColor: (index == 4)
-                                ? ColorManager.primaryColor
-                                : ColorManager.secondaryColor.withOpacity(0.2),
-                          ),
-                          SizedBox(
-                            width: width * 0.03,
-                          ),
-                          CustomButtonNav(
-                            imageUrl: "assets/icons/icon_contacts.png",
-                            title: "Kontak",
-                            color: (index == 5)
-                                ? ColorManager.whiteTextColor
-                                : ColorManager.blackprimaryColor,
-                            press: () {
-                              setState(() {
-                                index = 5;
-                              });
-                              controller.scrollToIndex(5,
-                                  duration: const Duration(seconds: 1),
-                                  preferPosition: AutoScrollPosition.begin);
-                            },
-                            backgroundColor: (index == 5)
-                                ? ColorManager.primaryColor
-                                : ColorManager.secondaryColor.withOpacity(0.2),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    SizedBox(
-                        height: height * 0.5,
-                        child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            controller: controller,
+                  ),
+                  SizedBox(
+                    height: height * 0.03,
+                  ),
+                  positionsView(),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SizedBox(
+                        height: height * 0.4,
+                        child: ScrollablePositionedList.builder(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
                             itemCount: content.length,
+                            itemScrollController: controller,
+                            itemPositionsListener: positionsController,
+                            scrollDirection: Axis.vertical,
                             itemBuilder: ((context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: AutoScrollTag(
-                                    key: ValueKey(index),
-                                    controller: controller,
-                                    child: content[index],
-                                    index: index),
+                              return Column(
+                                children: [
+                                  Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: content[index]),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
                               );
                             }))),
-                  ],
-                ),
+                  ),
+                ],
               )
             ],
           )),

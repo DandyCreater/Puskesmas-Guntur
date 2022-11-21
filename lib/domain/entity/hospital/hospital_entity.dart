@@ -1,13 +1,14 @@
-class HospitalModel {
+class HospitalEntity {
   String? responseStatus;
-  OKContentHospital? oKContentHospital;
+  OKContentHospitalEntity? oKContentHospital;
 
-  HospitalModel({this.responseStatus, this.oKContentHospital});
+  HospitalEntity(
+      {required this.responseStatus, required this.oKContentHospital});
 
-  HospitalModel.fromJson(Map<String, dynamic> json) {
+  HospitalEntity.fromJson(Map<String, dynamic> json) {
     responseStatus = json['ResponseStatus'];
     oKContentHospital = json['OKContentHospital'] != null
-        ? new OKContentHospital.fromJson(json['OKContentHospital'])
+        ? new OKContentHospitalEntity.fromJson(json['OKContentHospital'])
         : null;
   }
 
@@ -21,16 +22,16 @@ class HospitalModel {
   }
 }
 
-class OKContentHospital {
-  List<Hospital>? hospital;
+class OKContentHospitalEntity {
+  List<HospitalListEntity>? hospital;
 
-  OKContentHospital({this.hospital});
+  OKContentHospitalEntity({required this.hospital});
 
-  OKContentHospital.fromJson(Map<String, dynamic> json) {
+  OKContentHospitalEntity.fromJson(Map<String, dynamic> json) {
     if (json['hospital'] != null) {
-      hospital = <Hospital>[];
+      hospital = <HospitalListEntity>[];
       json['hospital'].forEach((v) {
-        hospital!.add(new Hospital.fromJson(v));
+        hospital!.add(new HospitalListEntity.fromJson(v));
       });
     }
   }
@@ -44,15 +45,19 @@ class OKContentHospital {
   }
 }
 
-class Hospital {
+class HospitalListEntity {
   String? imageUrl;
   String? title;
   String? address;
   String? noTelp;
 
-  Hospital({this.imageUrl, this.title, this.address, this.noTelp});
+  HospitalListEntity(
+      {required this.imageUrl,
+      required this.title,
+      required this.address,
+      required this.noTelp});
 
-  Hospital.fromJson(Map<String, dynamic> json) {
+  HospitalListEntity.fromJson(Map<String, dynamic> json) {
     imageUrl = json['imageUrl'];
     title = json['title'];
     address = json['address'];

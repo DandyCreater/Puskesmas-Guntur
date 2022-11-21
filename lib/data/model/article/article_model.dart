@@ -1,3 +1,5 @@
+import 'package:puskesmas_guntur/domain/entity/article/article_entity.dart';
+
 class ArticleModel {
   String? responseStatus;
   OKContentArticle? oKContentArticle;
@@ -22,6 +24,15 @@ class ArticleModel {
     data['failContent'] = this.failContent;
     return data;
   }
+
+  ArticleEntity toEntity() {
+    return ArticleEntity(
+        responseStatus: this.responseStatus,
+        oKContentArticle: this.oKContentArticle != null
+            ? this.oKContentArticle!.toEntity()
+            : null,
+        failContent: this.failContent);
+  }
 }
 
 class OKContentArticle {
@@ -44,6 +55,13 @@ class OKContentArticle {
       data['article'] = this.article!.map((v) => v.toJson()).toList();
     }
     return data;
+  }
+
+  OKContentArticleEntity toEntity() {
+    return OKContentArticleEntity(
+        article: this.article != null
+            ? this.article!.map((e) => e.toEntity()).toList()
+            : null);
   }
 }
 
@@ -81,5 +99,16 @@ class Article {
     data['time'] = this.time;
     data['description'] = this.description;
     return data;
+  }
+
+  ArticleListEntity toEntity() {
+    return ArticleListEntity(
+      header: this.header,
+      category: this.category,
+      imageUrl: this.imageUrl,
+      date: this.date,
+      time: this.time,
+      description: this.description,
+    );
   }
 }

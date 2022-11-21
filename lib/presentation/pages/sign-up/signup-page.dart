@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/bloc/signUp-Bloc/sign_up_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
@@ -96,6 +97,37 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+
+    _showSuccessDialog(BuildContext context, String message) {
+      Widget acceptButton = TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text("OK", style: ThemeText.heading3),
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              child: Lottie.asset('assets/lottie/success.json'),
+            ),
+            Text("Sign Up Berhasil", style: ThemeText.heading2),
+          ],
+        ),
+        content: Text(message, style: ThemeText.heading3),
+        actions: [
+          acceptButton,
+        ],
+      );
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          });
+    }
 
     Widget email() => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,17 +262,25 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SingleChildScrollView(
         child: BlocListener<SignUpBloc, SignUpState>(
           listener: (context, state) {
-            if (state is SignUpLoading) {
-              print("Sign Up : $state");
-              const Center(child: CircularProgressIndicator());
-            } else if (state is SignUpSucess) {
-              print("Sign Up Success : $state");
+            if (state is SignUpDispose) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SizedBox(
+                        height: height,
+                        width: width,
+                        child: Lottie.asset('assets/lottie/loading.json'));
+                  });
+              Future.delayed(const Duration(seconds: 5));
+            }
+            if (state is SignUpSucess) {
+              _showSuccessDialog(context, "Akun Anda Berhasil dibuat");
               Future.delayed(const Duration(seconds: 2)).then((value) =>
                   Navigator.pushNamedAndRemoveUntil(
                       context, Routes.signInRoute, (route) => false));
-            } else if (state is SignUpFailed) {
+            }
+            if (state is SignUpFailed) {
               _showAlertDialog(context, state.message!);
-              print("Sign Up Failed : $state");
             }
           },
           child: Padding(

@@ -6,7 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:puskesmas_guntur/domain/model/user-model/user_model.dart';
+import 'package:puskesmas_guntur/data/model/user/user_model.dart';
 import 'package:puskesmas_guntur/presentation/bloc/signIn-Bloc/sign_in_bloc.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';

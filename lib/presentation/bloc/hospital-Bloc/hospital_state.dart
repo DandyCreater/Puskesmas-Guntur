@@ -12,7 +12,7 @@ class HospitalInitial extends HospitalState {}
 class HospitalLoading extends HospitalState {}
 
 class HospitalLoaded extends HospitalState {
-  final OKContentHospital? okContentHospital;
+  final OKContentHospitalEntity? okContentHospital;
 
   const HospitalLoaded({required this.okContentHospital});
 

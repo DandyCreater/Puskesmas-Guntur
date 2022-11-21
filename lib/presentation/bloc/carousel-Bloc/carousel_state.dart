@@ -12,9 +12,13 @@ class CarouselInitial extends CarouselState {}
 class CarouselLoading extends CarouselState {}
 
 class CarouselLoaded extends CarouselState {
-  final OKContentCarousel okContentCarousel;
+  final OKContentCarouselEntity? okContentCarousel;
 
   const CarouselLoaded({required this.okContentCarousel});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [okContentCarousel!];
 }
 
 class CarouselFailed extends CarouselState {

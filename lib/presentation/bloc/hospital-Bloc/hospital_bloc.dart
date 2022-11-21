@@ -3,26 +3,28 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
-import 'package:puskesmas_guntur/domain/model/hopsital-model/hospital_model.dart';
+import 'package:puskesmas_guntur/domain/entity/hospital/hospital_entity.dart';
+import 'package:puskesmas_guntur/domain/usecase/hospital/hospital_usecase.dart';
 
 part 'hospital_event.dart';
 part 'hospital_state.dart';
 
 class HospitalBloc extends Bloc<HospitalEvent, HospitalState> {
-  HospitalBloc() : super(HospitalInitial()) {
+  final HospitalUseCase hospitalUseCase;
+  HospitalBloc(this.hospitalUseCase) : super(HospitalInitial()) {
     on<FetchHospital>((event, emit) async {
       emit(HospitalLoading());
 
-      final jsonData = await rootBundle.loadString("assets/json/hospital.json");
+      try {
+        final result = await hospitalUseCase.execute();
 
-      final decodeData = jsonDecode(jsonData);
-
-      var data = OKContentHospital.fromJson(decodeData["OKContentHospital"]);
-      print(jsonEncode(data));
-      if (decodeData["ResponseStatus"] == "OK") {
-        emit(HospitalLoaded(okContentHospital: data));
-      } else {
-        emit(const HospitalFailed(message: "Fetch Hospital Failed"));
+        result.fold((failure) {
+          emit(HospitalFailed(message: failure.message));
+        }, (response) {
+          emit(HospitalLoaded(okContentHospital: response.oKContentHospital));
+        });
+      } catch (e) {
+        emit(const HospitalFailed(message: "BLOC FETCH HOSPITAL ERROR"));
       }
     });
   }

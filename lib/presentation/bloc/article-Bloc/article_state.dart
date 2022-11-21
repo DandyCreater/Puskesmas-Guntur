@@ -12,7 +12,7 @@ class ArticleInitial extends ArticleState {}
 class ArticleLoading extends ArticleState {}
 
 class ArticleSuccess extends ArticleState {
-  final OKContentArticle? okContentArticle;
+  final OKContentArticleEntity? okContentArticle;
 
   const ArticleSuccess(this.okContentArticle);
 

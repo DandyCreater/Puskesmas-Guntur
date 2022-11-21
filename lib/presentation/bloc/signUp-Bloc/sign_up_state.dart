@@ -11,8 +11,10 @@ class SignUpInitial extends SignUpState {}
 
 class SignUpLoading extends SignUpState {}
 
+class SignUpDispose extends SignUpState {}
+
 class SignUpSucess extends SignUpState {
-  final UserModel? user;
+  final UserEntity? user;
 
   const SignUpSucess({required this.user});
 

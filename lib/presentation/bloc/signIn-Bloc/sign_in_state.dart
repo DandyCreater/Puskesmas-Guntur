@@ -11,8 +11,10 @@ class SignInInitial extends SignInState {}
 
 class SignInLoading extends SignInState {}
 
+class SignInDispose extends SignInState {}
+
 class SignInSuccess extends SignInState {
-  final UserModel? user;
+  final UserEntity? user;
 
   const SignInSuccess({required this.user});
 

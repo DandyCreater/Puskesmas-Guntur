@@ -1,3 +1,7 @@
+// ignore_for_file: unnecessary_this
+
+import 'package:puskesmas_guntur/domain/entity/pelayanan/pelayanan_entity.dart';
+
 class PelayananModel {
   String? responseStatus;
   OkContentPelayan? okContentPelayan;
@@ -8,8 +12,8 @@ class PelayananModel {
 
   PelayananModel.fromJson(Map<String, dynamic> json) {
     responseStatus = json['ResponseStatus'];
-    okContentPelayan = json['OkContentPelayan'] != null
-        ? new OkContentPelayan.fromJson(json['OkContentPelayan'])
+    okContentPelayan = json['OKContentPelayan'] != null
+        ? new OkContentPelayan.fromJson(json['OKContentPelayan'])
         : null;
     failContent = json['failContent'];
   }
@@ -18,10 +22,19 @@ class PelayananModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['ResponseStatus'] = this.responseStatus;
     if (this.okContentPelayan != null) {
-      data['OkContentPelayan'] = this.okContentPelayan!.toJson();
+      data['OKContentPelayan'] = this.okContentPelayan!.toJson();
     }
     data['failContent'] = this.failContent;
     return data;
+  }
+
+  PelayananEntity toEntity() {
+    return PelayananEntity(
+        responseStatus: this.responseStatus,
+        okContentPelayan: this.okContentPelayan != null
+            ? this.okContentPelayan!.toEntity()
+            : null,
+        failContent: this.failContent);
   }
 }
 
@@ -45,6 +58,13 @@ class OkContentPelayan {
       data['pelayanan'] = this.pelayanan!.map((v) => v.toJson()).toList();
     }
     return data;
+  }
+
+  OkContentPelayanEntity toEntity() {
+    return OkContentPelayanEntity(
+        pelayanan: this.pelayanan != null
+            ? this.pelayanan!.map((e) => e.toEntity()).toList()
+            : null);
   }
 }
 
@@ -70,5 +90,13 @@ class Pelayanan {
     data['date'] = this.date;
     data['time'] = this.time;
     return data;
+  }
+
+  PelayananListEntity toEntity() {
+    return PelayananListEntity(
+        imageUrl: this.imageUrl,
+        title: this.title,
+        date: this.date,
+        time: this.time);
   }
 }

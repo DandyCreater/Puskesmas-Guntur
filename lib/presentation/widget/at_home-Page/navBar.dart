@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive/hive.dart';
+import 'package:lottie/lottie.dart';
 import 'package:puskesmas_guntur/presentation/resources/color_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/font_manager.dart';
 import 'package:puskesmas_guntur/presentation/resources/routes_manager.dart';
@@ -14,11 +15,21 @@ class NavBar extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    deleteDrawer() {
+    deleteDrawer() async {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return SizedBox(
+                height: height,
+                width: width,
+                child: Lottie.asset('assets/lottie/loading.json'));
+          });
+
       var data = Hive.box("User");
       data.put("loginSession", false);
-      Navigator.pushNamedAndRemoveUntil(
-          context, Routes.signInRoute, (route) => false);
+      Future.delayed(const Duration(seconds: 2)).then((value) =>
+          Navigator.pushNamedAndRemoveUntil(
+              context, Routes.signInRoute, (route) => false));
     }
 
     return Drawer(
